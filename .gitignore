@@ -22,3 +22,4 @@ supervisord.pid
 # Local configuration and database backups
 .env
 /storage/backups/
+.rnd
