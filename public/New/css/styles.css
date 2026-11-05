@@ -1,0 +1,767 @@
+body{
+    font-family: "Sen", sans-serif !important;
+}
+.tab-section {
+    margin-top: 20px;
+}
+.nav-tabs .nav-link {
+    border-top: white !important;
+    border-left: white !important;
+    border-right: white !important;
+    color: #6c757d;
+    font-weight: bold;
+}
+.nav-tabs .nav-link.active {
+    color: #000;
+    border-bottom: 3px solid #28a745;
+}
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+}
+.low-stock {
+    background-color: #ffefd5;
+    color: #f57c00;
+}
+.out-of-stock {
+    background-color: #ffe5e5;
+    color: #e53935;
+}
+.icon {
+    font-size: 50px;
+}
+.nav-link .active{
+    border-bottom: #28a745 !important;
+    border: none !important;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+    border-color: #28a745 !important;
+}
+
+
+.header {
+    font-size: 18px;
+    font-weight: 500;
+    color: #2d2d2d;
+    margin: 32px 0px;
+}
+.content-card {
+    background-color: #f4f5f8;
+    border-radius: 8px;
+    padding: 30px 30px 133px 42px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.content-card h1 {
+    font-size: 46px;
+    font-weight: 750;
+    color: black;
+}
+.content-card ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 26px;
+}
+.content-card ul li {
+    font-size: 16px;
+    color: black;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+.content-card ul li::before {
+    content: '\2022';
+    color: #28a745;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.5em;
+}
+.btn-create {
+    background: #00892e !important;
+    color: #fff !important;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+.illustration {
+    max-width: 100%;
+    height: auto;
+}
+.feedback-link {
+    text-align: right;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+.feedback-link:hover {
+    text-decoration: underline;
+}
+.tips-resources {
+    margin-top: 40px;
+    border-top: 2px solid #e3e5e8;
+    padding-top: 22px;
+}
+.tips-resources h5 {
+    font-size: 16px;
+    font-weight: light;
+    color: black;
+    margin-bottom: 15px;
+}
+.tips-resources a {
+    color: #007bff;
+    font-size: 14px;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+}
+.tips-resources a:hover {
+    text-decoration: underline;
+}
+.image{
+    position: absolute;
+    top: 50%;
+    left: 68%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    height: auto;
+}
+.image2{
+    position: absolute;
+    top: 50%;
+    left: 72%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    height: auto;
+}
+.content-detail{
+    position: relative;
+}
+.main-section {
+    text-align: center;
+    padding: 60px 20px;
+}
+.main-section h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    color: black;
+}
+.feature {
+    text-align: center;
+    padding: 20px;
+}
+.feature img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+.feature h5 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2d2d2d;
+}
+.feature p {
+    font-size: 14px;
+    color: #4a4a4a;
+    margin-bottom: 0;
+}
+.btn-create {
+    background-color: #2ca01c !important;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 40px;
+    border-radius: 36px !important;
+    padding: 8px 24px !important;
+}
+.btn-create:hover{
+    background: #128303 !important;
+}
+.content-detail2{
+    margin-top: 44px !important;
+    position: relative;
+}
+.estimate-button{
+    border-radius: 7px !important;
+    background: #00892e !important;
+    border: 2px solid #6b6c72;
+}
+.estimate-button:hover{
+    background: #006c23 !important;
+}
+.estimate-button-black{
+    border-radius: 7px !important;
+    background: none !important;
+    border: 2px solid #6b6c72 !important;
+    color: #393A3D !important;
+    font-weight: 600 !important;
+}
+.estimate-button-black:hover{
+    background: #e6e7eb !important;
+}
+.header-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-section h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+.stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    /* border-radius: 10px; */
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+    color: white;
+    margin-bottom: 20px;
+    height: 150px;
+    margin-top: 20px;
+}
+.low-stock2, .out-of-stock2, .air-of-stock2 {
+    border-right: 2px solid #d4d7dc;
+}
+.out-of-stock2 , .low-stock2, .sea-of-stock2, .air-of-stock2 {
+    text-align: left;
+}
+.out-stock-img {
+    /* height: 50px;
+    width: 50px;
+    margin-right: 15px; */
+    background: #d52b1e url(https://warranty.autopower.pk/New/images/no_stock.png) no-repeat 14px 22px !important;
+    width: 120px;
+    height: 120px;
+    border-radius: 50% !important;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 85px !important;
+    margin-right: 30px;
+}
+.low-stock-img{
+    background: #ff8000 url(https://warranty.autopower.pk/New/images/low_stock.png) no-repeat 14px 22px !important;
+    width: 120px;
+    height: 120px;
+    border-radius: 50% !important;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 85px !important;
+    margin-right: 30px;
+}
+.air-stock-img {
+    background: #31EFBB url(https://warranty.autopower.pk/New/images/air_stock.jpeg) no-repeat 14px 22px !important;
+    width: 120px;
+    height: 120px;
+    border-radius: 50% !important;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 85px !important;
+    margin-right: 30px;
+}
+.sea-stock-img{
+    background: #34CFEF url(https://warranty.autopower.pk/New/images/sea_stock.png) no-repeat 14px 22px !important;
+    width: 120px;
+    height: 120px;
+    border-radius: 50% !important;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 85px !important;
+    margin-right: 30px;
+}
+.low-stock2 h3 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ff8000
+}
+.low-stock2 p , .out-of-stock2 p, .sea-of-stock2 p, .air-of-stock2 p{
+    font-size: 16px;
+    color: #393a3d;
+}
+.out-of-stock2 h3{
+    margin: 0;
+    font-size: 36px;
+    font-weight: bold;
+    color: #d52b1e
+}
+.sea-of-stock2 h3{
+    margin: 0;
+    font-size: 36px;
+    font-weight: bold;
+    color: #34CFEF
+}
+.air-of-stock2 h3{
+    margin: 0;
+    font-size: 36px;
+    font-weight: bold;
+    color: #31EFBB
+}
+.stat-card p {
+    margin: 0;
+    font-size: 14px;
+}
+.search-section {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+.search-section input {
+    /*width: 300px;*/
+    margin-right: 10px;
+}
+.table-section {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+.data-table th, .data-table td {
+    vertical-align: middle;
+    text-align: center;
+}
+.action-links {
+    text-decoration: none;
+    color: #007bff;
+    cursor: pointer;
+}
+.action-links:hover {
+    text-decoration: underline;
+}
+.new-button{
+    background: #2ca01c !important;
+    color: white !important;
+    border-top-left-radius: 5px !important;
+    border-bottom-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    padding: 3px 30px !important;
+}
+.new-button:hover{
+    background: #238317 !important;
+}
+.more-button{
+    background: transparent !important ;
+    color: black !important;
+    padding: 3px 23px !important;
+    margin-right: 10px;
+}
+.table {
+    border-collapse: separate; /* Ensures borders do not overlap */
+    border-spacing: 0; /* Removes space between borders */
+}
+.table thead tr th{
+    border-right: 1px dotted #c7c7c7; /* Adds vertical line */
+    border-bottom: 2px solid #c7c7c7 !important; 
+    font-size: 11px;
+    font-weight: 600;
+}
+.table th, .table td {
+    border-right: 1px dotted #c7c7c7; /* Adds vertical line */
+    border-bottom: 5px solid #c7c7c7; /* Adds horizontal line */
+}
+.table td{
+    font-size: 12px;
+}
+.table thead th {
+    border-bottom: 2px solid #dee2e6; /* Adds a thicker line under the header */
+}
+.table tr:last-child th, .table tr:last-child td {
+    border-bottom: none; /* Removes the bottom border on the last row */
+}
+.table th:last-child, .table td:last-child {
+    border-right: none; /* Removes the right border on the last column */
+}
+.sidebar {
+    height: 100%;
+    width: 0; /* Sidebar width set to 0 initially */
+    position: fixed; /* Position it fixed alongside the right edge of the page */
+    z-index: 1; /* Stays on top of other content */
+    top: 0; /* Start from top */
+    right: 0; /* Start from right edge */
+    background-color: white; /* Sidebar background color */
+    overflow-x: hidden; /* No horizontal scroll */
+    padding-top: 10px; /* Space from the top */
+    transition: 0.5s; /* Transition effect when opening and closing */
+    color: black;
+    z-index: 2;
+}
+.overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 1; /* Below the sidebar, above everything else */
+    cursor: pointer; /* Suggests clickable */
+}
+.sidebar.open + .overlay {
+    display: block; /* Show overlay when sidebar is open */
+}
+.service-info{
+    border-bottom: 1px solid #d4d7dc !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.product-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.inven-imag{
+    padding: 7px 11px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+.inven-imag img{
+    background: #0077c5;
+    border-radius: 50%;
+    padding: 9px;
+    width: 50px;
+    height: 50px;
+}
+.inven-imag p{
+    margin-bottom: 0px !important;
+}
+.service-info2{
+    border-bottom: 1px solid #d4d7dc !important;
+    
+    justify-content: space-between;
+    align-items: center;
+}
+.close-icon{
+    color: gray;
+    cursor: pointer;
+}
+.sidebar h4{
+    font-weight: 700;
+    font-size: 16px;
+    /* border-bottom: 1px solid #d4d7dc !important; */
+    padding: 7px 11px;
+}
+.info-item{
+    border-bottom: 1px solid #d4d7dc !important;
+    cursor: pointer;
+}
+.info-item:hover{
+    background: #d4d7dc;;
+}
+
+.sidebar .info-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.sidebar .info-item i {
+    font-size: 24px;
+    min-width: 30px;
+    margin-right: 15px;
+    color: #0d6efd; /* Bootstrap primary blue for icons */
+}
+
+.sidebar .info-item div {
+    /* flex: 1; */
+}
+
+.close-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* When sidebar is open, set width */
+.sidebar.open {
+    width: 491px !important; /* Width of sidebar when it's open */
+}
+.box {
+    display: inline-block;
+    width: 256px;
+    height: 97px;
+    border-radius: 50%;
+    position: relative;
+    transition: all .08s ease-in;
+    margin: 20px 15px 20px 30px;
+    background: #0077c5 url(https://warranty.autopower.pk/New/images/box.png) no-repeat;
+    background-position: 24px;
+    flex: 1;
+}
+
+.shirt{
+    display: inline-block;
+    width: 256px;
+    height: 97px;
+    border-radius: 50%;
+    position: relative;
+    transition: all .08s ease-in;
+    margin: 20px 15px 20px 30px;
+    background: #0077c5 url(https://warranty.autopower.pk/New/images/shirt.png) no-repeat;
+    background-position: 24px;
+    flex: 1;
+}
+.bundle{
+    display: inline-block;
+    width: 256px;
+    height: 97px;
+    border-radius: 50%;
+    position: relative;
+    transition: all .08s ease-in;
+    margin: 20px 15px 20px 30px;
+    background: #0077c5 url(https://warranty.autopower.pk/New/images/bundle.png) no-repeat;
+    background-position: 24px;
+    flex: 1;
+}
+.brush {
+    display: inline-block;
+    width: 256px;
+    height: 91px;
+    border-radius: 50%;
+    position: relative;
+    transition: all .08s ease-in;
+    margin: 20px 15px 20px 30px;
+    background: #0077c5 url(https://warranty.autopower.pk/New/images/brush.png) no-repeat;
+    background-position: 24px;
+    flex: 1;
+}
+.inventory{
+    flex: 3;
+}
+strong{
+    font-size: 12px;
+}
+.inventory p{
+    font-size: 13px;
+}
+.image-row{
+    align-items: center;
+}
+.info3{
+    padding-left: 0px !important;
+}
+.initial-gap{
+    justify-content: space-around;
+    font-size: 12px;
+}
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .form-row label {
+    flex: 0 0 150px;
+    margin-right: 10px;
+  }
+  .form-row input[type="text"],
+  .form-row input[type="date"] {
+    flex: 1;
+  }
+  .form-row .info {
+    font-size: 0.8rem;
+    color: #666;
+    padding-left: 10px;
+  }
+  .sizing-sidebar{
+    font-size: 12px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 2px solid #ccc;
+    padding-top: 10px;
+    margin-top: 20px;
+}
+.save-button {
+    background-color: #2ca01c;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+   border-radius: 36px;
+}
+.save-button:hover{
+    background-color: #217017;
+}
+.input-group-text{
+    background-color: transparent !important;
+    border: none !important;
+}
+.strectching{
+    align-items: center !important;
+}
+.customer-sidebar {
+    background-color: #f8f9fa; /* Light grey background for better visibility */
+    border: 1px solid #dee2e6; /* Slight border for definition */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow for 3D effect */
+    width: 350px; /* Adjusted width for prominence */
+    padding: 20px; /* Ample padding for content breathing room */
+    position: fixed; /* Makes the sidebar stay in place during scrolling */
+    right: 0; /* Align to the right side of the viewport */
+    top: 0; /* Align to the top of the viewport */
+    height: 100vh; /* Full viewport height */
+    z-index: 1000; /* Ensures it sits above other content */
+    overflow-y: auto; /* Allows scrolling within the sidebar */
+}
+
+/* CSS for when the sidebar is active/open */
+.customer-sidebar.active {
+    transform: translateX(0);
+}
+
+/* CSS for the overlay to darken the rest of the page when the sidebar is open */
+.overlay-customer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Just below the sidebar */
+    display: none; /* Hidden by default */
+}
+
+/* Showing the overlay when the sidebar is active */
+.overlay-customer.active {
+    display: block;
+}
+.contact{
+    display: flex !important;
+    padding: 0 !important;
+}
+.card-header{
+    background-color: transparent !important;
+    border-bottom: 0 !important;
+    padding: 0 !important;
+}
+.sizing-text{
+    text-align: left !important;
+}
+.sizing-text2{
+    display: flex;
+    justify-content: left;
+}
+.sizing-text div label{
+    font-size: 12px !important;
+}
+.shipping-address{
+    text-align: left !important;
+    font-size: 12px;
+    margin-bottom: 0px !important;
+    font-weight: 600;
+}
+.card-header .btn-link {
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
+
+/* Styling the file input and label to appear with dashed borders */
+.btn-outline-secondary {
+    border-color: #ccc;
+    border-style: dashed;
+    background: none;
+    color: #495057;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+}
+.attachment{
+    color: #0077c5 !important;
+}
+.attachment:hover{
+    color: #0077c5 !important;
+    background-color: white !important;
+}
+.setting{
+    margin-right: 10px;
+}
+.icon-styling{
+    display: flex;
+    align-items: center;
+}
+.svg-styling{
+    margin-right: 10px;
+}
+.customer-service-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fixing-gap{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.customer-service-info h4{
+    padding-left: 0 !important;
+}
+.customer-sidebar{
+    width: 0;
+    padding: 0;
+}
+.change-color{
+    background: #00892e !important;
+}
+.modal-content {
+    background-color: white; /* Set the background color */
+    padding: 20px; /* Add some padding */
+}
+
+.modal-header, .modal-footer {
+    border-bottom: none; /* Remove default borders */
+    border-top: none;
+}
+.container-sizing{
+    text-align: left !important;
+    font-size: 12px;
+}
+.cc-styles label{
+    display: flex;
+    justify-content: space-between;
+}
+.cc-styles label span{
+    color: #0077C5;
+}
+.label-style{
+    font-weight: bold;
+}
+.filter-container {
+    position: relative;
+    display: inline-block; /* This makes the container fit the size of its contents */
+}
+
+.filter-dropdown {
+    display: none;
+    position: absolute;
+    left: 0; /* Aligns directly under the icon */
+    top: 100%; /* Positions just below the filter icon */
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px; /* Adjust based on your design */
+    z-index: 1000;
+    border-radius: 5px;
+}
+
+/* Optional: styles for form controls */
+.filter-dropdown form {
+    margin: 10px;
+}
