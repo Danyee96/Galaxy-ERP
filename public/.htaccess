@@ -20,7 +20,5 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-<FilesMatch ".(?:html|php)$">
-SetHandler application/x-lsphp80
-</FilesMatch>
+# Use the PHP version configured for this website in the hosting panel.
 
