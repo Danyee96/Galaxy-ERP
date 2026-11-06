@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Machine Slip</title>
+        <title>Machine Slip | {{ config('brand.name') }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -31,6 +31,7 @@
                 font-family: Arial;
             }
         </style>
+        @include('branding.print-head')
     </head>
     <body>
         <div style="page-break-before: always;">

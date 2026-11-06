@@ -38,3 +38,5 @@
     @endif
     <!-- END: Custom CSS-->
 <link rel="stylesheet" href="{{ asset('assets/css/biztally.css') }}?v={{ filemtime(public_path('assets/css/biztally.css')) }}">
+
+@include('branding.head')

@@ -17,11 +17,26 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
       rel="stylesheet"
     />
-    <title>In-Transit Inventory</title>
+    <title>In-Transit Inventory | {{ config('brand.name') }}</title>
+    @include('branding.head')
+    <style>
+      .galaxy-workspace .transit-overdue-row > td { --bs-table-bg: #fff5f5; --bs-table-hover-bg: #ffe8e8; }
+      .galaxy-workspace .transit-overdue-row > td:first-child { border-left: 3px solid #b42318; }
+      .galaxy-workspace .transit-overdue-badge { background: #b42318; color: #fff; }
+    </style>
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>In-Transit Inventory</h2>
+      @if($overdue_count > 0)
+      <div class="alert alert-danger d-flex flex-wrap align-items-center justify-content-between gap-2" role="status">
+        <span><strong>{{ $overdue_count }} overdue {{ $overdue_count == 1 ? 'shipment' : 'shipments' }}</strong> awaiting full receipt.</span>
+        <a class="alert-link" href="{{ route('inTransitInventory', ['overdue' => 1]) }}">View overdue</a>
+      </div>
+      @else
+      <p class="text-muted">No overdue shipments.</p>
+      @endif
       <!-- Tabs Section -->
       <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -119,12 +134,18 @@
               <div class="form-group">
                 <label for="transit_method">Transit Method</label>
                 <select class="form-select" name="transit_method" id="transit_method">
-                  <option value="2">By Air</option>
-                  <option value="3">By Sea</option>
+                  <option value="">All methods</option>
+                  <option value="1" @if(request('transit_method') == 1) selected @endif>By Hand</option>
+                  <option value="2" @if(request('transit_method') == 2) selected @endif>By Air</option>
+                  <option value="3" @if(request('transit_method') == 3) selected @endif>By Sea</option>
                 </select>
               </div>
+              <div class="form-group mt-2">
+                <label for="overdue">Delivery status</label>
+                <select class="form-select" name="overdue" id="overdue"><option value="">All pending</option><option value="1" @if(request()->boolean('overdue')) selected @endif>Overdue</option></select>
+              </div>
               <div style="justify-content: space-between;" class="d-flex">
-                <button type="button" class="btn btn-secondary mt-2" onclick="toggleFilterDropdown()">Reset</button>
+                <a class="btn btn-secondary mt-2" href="{{ route('inTransitInventory') }}">Reset</a>
                 <button type="submit" class="btn  mt-2 new-button">Apply</button>
               </div>
 
@@ -154,7 +175,8 @@
           </thead>
           <tbody>
             @foreach($product_inventories as $key => $inventory)
-            <tr>
+            @php($overdueDays = $inventory->overdue_days)
+            <tr class="{{ $overdueDays > 0 ? 'transit-overdue-row' : '' }}">
               <td>{{++$key}}</td>
               <td>{{$inventory->productDetails ? $inventory->productDetails->name : ''}}</td>
               <td>{{$inventory->productDetails ? $inventory->productDetails->sku : ''}}</td>
@@ -178,13 +200,15 @@
               <td>{{$inventory->received_stock}}</td>
               <td>{{$inventory->remaining_stock}}</td>
               <td>{{$inventory->production_date}}</td>
-              <td>{{$inventory->expected_date}}</td>
+              <td>{{ $inventory->expected_date ?: 'Not set' }}
+                @if($overdueDays > 0)<br><span class="badge transit-overdue-badge">Overdue</span><small class="d-block text-danger">Overdue by {{ $overdueDays }} {{ $overdueDays == 1 ? 'day' : 'days' }}</small>@endif
+              </td>
               <td>{{$inventory->entryBy ? $inventory->entryBy->name : ''}}</td>
               <td>{{date('d-m-Y h:i a', strtotime($inventory->created_at))}}</td>
               <td>
                 <button class="btn btn-link"><a class="dropdown-item received-inventory"
                   href="#"
-                  data-name="{{$inventory->productDetails->name}}"
+                  data-name="{{optional($inventory->productDetails)->name}}"
                   data-total_qty="{{$inventory->remaining_stock}}"
                   data-product_id="{{$inventory->id}}"
                   data-bs-toggle="modal"
@@ -195,6 +219,7 @@
                 <!-- <button class="btn btn-link"><a href="{{route('markReceivedTransit', $inventory->id)}}">Mark as Recived</a></button></td> -->
             </tr>
             @endforeach
+            @if($product_inventories->isEmpty())<tr><td colspan="12" class="text-center text-muted">No matching in-transit inventory.</td></tr>@endif
           </tbody>
         </table>
       </div>

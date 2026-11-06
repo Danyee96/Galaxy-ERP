@@ -20,9 +20,11 @@
     />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="{{asset('New/script.js')}}"></script>
-    <title>Product & Services</title>
+    <title>Product & Services | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Product & Services</h2>
       <!-- Tabs Section -->
@@ -226,6 +228,8 @@
         </div>
       </div>
 
+      @if(config('warehouses.enabled'))<div class="mb-2"><a class="btn btn-primary" href="{{ route('warehouses.index') }}">Manage warehouses / transfer stock</a></div>@endif
+      @include('warehouse._unassigned-warning')
       <!-- Search Section -->
       <div class="search-section">
         <input type="text" style="width: 300px" id="searchInput" class="form-control" placeholder="Find products and services" />
@@ -300,6 +304,7 @@
               <th scope="col">COST</th>
               <th scope="col">SALES DESCRIPTION</th>
               <th scope="col">QTY ON HAND</th>
+              @if(config('warehouses.enabled'))<th scope="col">WAREHOUSE / LOCATION STOCK</th>@endif
               <th scope="col">REORDER POINT</th>
               <th scope="col">TRANSIT BY AIR</th>
               <th scope="col">TRANSIT BY SEA</th>
@@ -312,6 +317,7 @@
               <td><input type="checkbox" /></td>
               <td>
                 {{$product->name}}
+                @if(config('warehouses.enabled') && $unassignedProducts->contains('id',$product->id))<small class="d-block text-danger">Stock correction required · Not assigned to a warehouse</small>@elseif(config('warehouses.enabled'))<small class="d-block"><a href="{{ route('warehouses.index',['source_type'=>'product','source_id'=>$product->id]) }}">Warehouse / location stock</a></small>@endif
                 @if($product->type == 'Bundle')
                   <div class="modal fade text-left" id="backdrop{{$product->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -347,7 +353,19 @@
               <td>{{$product->category}}</td>
               <td>{{$product->sale_price}}</td>
               <td>{{$product->description}}</td>
-              <td>{{$product->total_qty}}</td>
+              <td>{{ \App\Services\Warehouse\Quantity::display($product->total_qty) }}</td>
+              @if(config('warehouses.enabled'))
+              <td>
+                @if($unassignedProducts->contains('id',$product->id))
+                <a class="text-danger" href="{{ route('warehouses.unassigned') }}">Correction required · Unassigned</a>
+                @else
+                  @forelse($productWarehouseStock->get($product->id,collect()) as $stock)
+                  <small class="d-block mb-1"><strong>{{ $stock->warehouse_name }}: {{ \App\Services\Warehouse\Quantity::display($stock->quantity) }}</strong><br>@if($stock->kind==='transfer') In transfer @else @if($stock->rack) Rack {{ $stock->rack }} · @endif Row {{ $stock->row }} · Column {{ $stock->column }} @endif</small>
+                  @empty<span class="text-muted">{{ $product->type==='Inventory' ? 'No warehouse stock' : 'Not a physical stock item' }}</span>@endforelse
+                  @if($product->type==='Inventory')<a class="small" href="{{ route('warehouses.index',['source_type'=>'product','source_id'=>$product->id]) }}">Manage stock / transfer</a>@endif
+                @endif
+              </td>
+              @endif
               <td>{{$product->re_order}}</td>
               <td>{{$product->air_transit}}</td>
               <td>{{$product->sea_transit}}</td>
@@ -393,7 +411,7 @@
                       data-name="{{$product->name}}"
                       data-sku="{{$product->sku}}"
                       data-type="{{$product->type}}"
-                      data-total_qty="{{$product->total_qty}}"
+                      data-total_qty="{{ \App\Services\Warehouse\Quantity::display($product->total_qty) }}"
                       data-product_id="{{$product->id}}"
                       data-toggle="modal"
                       data-target="#addInventoryModal"
@@ -808,5 +826,8 @@
           });
       }
     </script>
+    @if(request()->boolean('add_item'))
+    <script>document.addEventListener('DOMContentLoaded',function(){document.getElementById('openSidebar')?.click();});</script>
+    @endif
   </body>
 </html>

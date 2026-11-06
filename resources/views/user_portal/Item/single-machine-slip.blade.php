@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Machine Slip</title>
+        <title>Machine Slip | {{ config('brand.name') }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -147,19 +147,17 @@
 
 
         </style>
+        @include('branding.print-head')
     </head>
     <body>
         <div>
             <header class="row" style="width: 100%; margin-top: 20px;" class="clearfix">
                 <div id="logo">
-                    <img  height="60px" src="{{asset('images/logo.png')}}">
+                    <img  height="60px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('brand/galaxy-logo.png'))) }}">
                 </div>
-                <h1>AutoPower Warranty Slip</h1>
+                <h1>Galaxy Inverter Warranty Slip</h1>
                 <div style="float: right;" class="clearfix">
-                    <div>AutoPower</div>
-                    <div>Autopower Factory, M Din,<br> Walton Rd, Walton Railway<br> Officers Colony, Lahore, Punjab</div>
-                    <div>+92 303 4288266</div>
-                    <div>info@autopower.pk</div>
+                    @include('branding.contact')
                     <br>
                 </div>
                 <div style="float: left; margin-left: 40px;">
@@ -200,15 +198,15 @@
                 </tbody>
             </table>
             <h3 style="margin-top: 60px">Disclaimer</h3>
-            <p><span style="font-weight: bold">{{ $machine->name }}</span> is to ensure that the items being delivered to AutoPower as per this sheet.</p>
-            <p><span style="font-weight: bold">AutoPower</span> is not responsible for the content packed inside the Machine.</p>
+            <p><span style="font-weight: bold">{{ $machine->name }}</span> is to ensure that the items being delivered to Galaxy Inverter as per this sheet.</p>
+            <p><span style="font-weight: bold">Galaxy Inverter</span> is not responsible for the content packed inside the Machine.</p>
             <p>Booked weight may vary with invoice/billing weight as our manifested weight will be treated as final weight.</p>
             <br>
             <table style="width: 100%;">
                 <tbody>
                     <tr>
                         <th class="service" style="border: 1px solid black; color: black; font-weight: bold; font-size: 13px">Customer</th>
-                        <th class="service" colspan="2" style="text-align: center; border: 1px solid black; color: black; font-weight: bold; font-size: 13px">AutoPower</th>
+                        <th class="service" colspan="2" style="text-align: center; border: 1px solid black; color: black; font-weight: bold; font-size: 13px">Galaxy Inverter</th>
                     </tr>
                     <tr>
                         <td class="service" style="text-align: left; padding: 8px; border: 1px solid black;">Name: {{ $machine->name }}</td>

@@ -8,9 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sen:wght@400..800&display=swap" rel="stylesheet">
-    <title>Document</title>
-</head>
-<body>
+    <title>Document | {{ config('brand.name') }}</title>
+  @include('branding.head')
+  </head>
+<body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
         <h2>Sales</h2>
         <!-- Tabs Section -->

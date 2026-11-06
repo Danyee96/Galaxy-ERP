@@ -13,6 +13,13 @@ require('dotenv').config();
  |
  */
 
+mix.sass('resources/sass/branding/galaxy.scss', 'public/brand/galaxy.css');
+mix.sass('resources/sass/branding/erp.scss', 'public/brand/erp.css');
+mix.sass('resources/sass/branding/estimation.scss', 'public/brand/estimation.css');
+mix.scripts('resources/js/branding/estimation.js', 'public/brand/estimation.js');
+mix.scripts('resources/js/branding/erp.js', 'public/brand/erp.js');
+mix.scripts('resources/js/branding/erp-dashboard.js', 'public/brand/erp-dashboard.js');
+
 const glob = require('glob')
 const path = require('path')
 
@@ -117,3 +124,8 @@ if (mix.inProduction()) {
   mix.setResourceRoot("/demo/frest-bootstrap-laravel-admin-dashboard-template/demo-1");
 }
 mix.version();
+
+mix.scripts('resources/js/branding/warehouse-context.js', 'public/brand/warehouse-context.js');
+
+mix.scripts('resources/js/branding/list-tools.js', 'public/brand/list-tools.js');
+mix.copy('resources/sass/branding/list-tools.css', 'public/brand/list-tools.css');

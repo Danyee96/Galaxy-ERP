@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Print Estimate</title>
+        <title>Print Estimate | {{ config('brand.name') }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style type="text/css">
+            @page { size: A4 portrait; margin: 12mm; }
+            @media print { .estimation-actions { display: none !important; } body { width: auto; height: auto; } thead { display: table-header-group; } tr { break-inside: avoid; } }
+
             .clearfix:after {
                 content: "";
                 display: table;
@@ -147,19 +150,22 @@
 
 
         </style>
+        @include('branding.print-head')
     </head>
     <body>
+        <div class="estimation-actions" style="padding:12px 0">
+            <button type="button" class="btn btn-primary" id="plan-export-excel">Export Excel</button>
+            <button type="button" class="btn btn-default" id="plan-print">Print</button>
+            <p id="plan-export-error" role="alert" hidden></p>
+        </div>
         <div>
             <header class="row" style="width: 100%; margin-top: 20px;" class="clearfix">
                 <div id="logo">
-                    <img  height="60px" src="{{asset('images/logo.png')}}">
+                    <img  height="60px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('brand/galaxy-logo.png'))) }}">
                 </div>
                 <h1>Estimate Number # {{$estimate->number}}</h1>
                 <div style="float: right;" class="clearfix">
-                    <div>AutoPower</div>
-                    <div>Autopower Factory, M Din,<br> Walton Rd, Walton Railway<br> Officers Colony, Lahore, Punjab</div>
-                    <div>+92 303 4288266</div>
-                    <div>info@autopower.pk</div>
+                    @include('branding.contact')
                     <br>
                 </div>
                 <div style="float: left; margin-left: 40px;">
@@ -184,14 +190,27 @@
                     @foreach($estimate->estimateDetails as $dd)
                     <tr>
                         <td class="service">{{ date('d M Y', strtoTime($estimate->created_at)) }}</td>
-                        <td class="desc">{{$dd->productDetails->name}}</td>
-                        <td class="desc">{{$dd->productDetails->category}}</td>
+                        <td class="desc">{{optional($dd->productDetails)->name ?? 'Missing component'}}</td>
+                        <td class="desc">{{optional($dd->productDetails)->category}}</td>
                         <td class="desc">{{$dd->quantity_in_stock}}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+        @php
+            $legacyRows = [['Date', 'Inventory item name', 'Inventory item category', 'Stock required']];
+            foreach ($estimate->estimateDetails as $line) {
+                $legacyRows[] = [date('d M Y', strtotime($estimate->created_at)), optional($line->productDetails)->name ?? 'Missing component', optional($line->productDetails)->category, (float) $line->quantity_in_stock];
+            }
+            $exportData = ['number' => $estimate->number, 'sections' => [
+                ['name' => 'Summary', 'rows' => [['Galaxy Inverter — Historic estimation'], ['Estimate', (string) $estimate->number], ['Title', $estimate->title], ['System', optional($estimate->bundleDetails)->name ?? 'Legacy model unavailable'], ['Quantity to be produced', (int) $estimate->quantity], ['Stock snapshot', 'Not recorded in this historical estimate; original recorded requirements are shown.']]],
+                ['name' => 'Materials', 'rows' => $legacyRows]
+            ]];
+        @endphp
+        <script type="application/json" id="plan-export-data">@json($exportData)</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+        <script src="{{ asset('brand/estimation.js') }}?v={{ filemtime(public_path('brand/estimation.js')) }}" defer></script>
     </body>
 </html>
 

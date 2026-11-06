@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\user_portal;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductInventory;
 use Illuminate\Http\Request;
 use App\Models\ItemList;
 use App\Models\ItemHistory;
@@ -108,7 +109,8 @@ class IndexController extends Controller
             $monthly_out_count_arr[$i] = (int) $out_complain->get($i, 0);
         }
 
-        return view('user_portal.index',['pageConfigs'=>$pageConfigs,'breadcrumbs'=>$breadcrumbs,'total_complains'=>$total_complains, 'total_pending_complains'=>$total_pending_complains, 'total_completed_complains'=>$total_completed_complains, 'total_monthly_complains'=>$total_monthly_complains, 'total_monthly_pending_complains'=>$total_monthly_pending_complains, 'total_monthly_completed_complains'=>$total_monthly_completed_complains, 'company_data'=>$company_data, 'company_name'=>$company_name, 'power_data'=>$power_data, 'power_name'=>$power_name,'error_data'=>$error_data,'error_name'=>$error_name,'accessory_data'=>$accessory_data,'accessory_name'=>$accessory_name,'monthly_in_count_arr'=>$monthly_in_count_arr,'monthly_days_arr'=>$monthly_days_arr,'monthly_out_count_arr'=>$monthly_out_count_arr,'monthly_out_days_arr'=>$monthly_out_days_arr]);
+        $overdueTransitCount = in_array((int) Auth::user()->role_id, [1, 4, 5], true) ? ProductInventory::overdue()->count() : 0;
+        return view('user_portal.index',['overdueTransitCount' => $overdueTransitCount, 'pageConfigs'=>$pageConfigs,'breadcrumbs'=>$breadcrumbs,'total_complains'=>$total_complains, 'total_pending_complains'=>$total_pending_complains, 'total_completed_complains'=>$total_completed_complains, 'total_monthly_complains'=>$total_monthly_complains, 'total_monthly_pending_complains'=>$total_monthly_pending_complains, 'total_monthly_completed_complains'=>$total_monthly_completed_complains, 'company_data'=>$company_data, 'company_name'=>$company_name, 'power_data'=>$power_data, 'power_name'=>$power_name,'error_data'=>$error_data,'error_name'=>$error_name,'accessory_data'=>$accessory_data,'accessory_name'=>$accessory_name,'monthly_in_count_arr'=>$monthly_in_count_arr,'monthly_days_arr'=>$monthly_days_arr,'monthly_out_count_arr'=>$monthly_out_count_arr,'monthly_out_days_arr'=>$monthly_out_days_arr]);
     }
 
     public function count_order($arr)

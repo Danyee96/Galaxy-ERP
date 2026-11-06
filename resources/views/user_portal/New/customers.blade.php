@@ -12,9 +12,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   
-    <title>Customers</title>
-</head>
-<body>
+    <title>Customers | {{ config('brand.name') }}</title>
+  @include('branding.head')
+  </head>
+<body class="galaxy-workspace">
+    @include('branding.header')
     
     <div class="container mt-4">
         <h2>Customers</h2>

@@ -11,6 +11,7 @@
 @endsection
 
 @section('content')
+@if(config('warehouses.enabled'))<div data-warehouse-context-host data-recipe-type="ups"></div>@endif
 <!-- Simple Validation start -->
 <section class="simple-validation">
   <div class="row">

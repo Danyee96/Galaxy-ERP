@@ -33,6 +33,10 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        // Preserve rendered validation responses while rolling back the enclosing stock transaction.
+        $this->renderable(function (Throwable $error, $request) {
+            if ($request->attributes->get('warehouse.transaction')) $request->attributes->set('warehouse.rollback', true);
+        });
         $this->reportable(function (Throwable $e) {
             //
         });

@@ -11,13 +11,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="Super Asia, Super Asia Agri, Agri Services, Agri Bags">
-    <meta name="keywords" content="Super Asia, Super Asia Agri, Agri Services, Agri Bags">
+    <meta name="description" content="Galaxy Inverter, Galaxy ERP, Inventory, Production, Warranty Service">
+    <meta name="keywords" content="Galaxy Inverter, Galaxy ERP, Inventory, Production, Warranty Service">
     <meta name="author" content="PIXINVENT">
-    <title>Super Asia Agri</title>
+    <title>{{ config('brand.name') }}</title>
     
-    <link rel="apple-touch-icon" href="{{ asset('app-assets/images/ico/apple-icon-120.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
+    @include('branding.head')
     <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,600%7CIBM+Plex+Sans:300,400,500,600,700" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->

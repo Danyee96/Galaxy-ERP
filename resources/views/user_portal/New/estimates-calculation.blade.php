@@ -13,9 +13,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
-    <title>Estimate Calculations</title>
-</head>
-<body>
+    <title>Estimate Calculations | {{ config('brand.name') }}</title>
+  @include('branding.head')
+  </head>
+<body class="galaxy-workspace">
+<div class="alert alert-info" role="note">Legacy reservation report: unreserved multi-system production plans are not added to these commitments. <a href="{{ route('productEstimates', ['kind' => 'planning']) }}">View and export production-plan snapshots</a>.</div>
+    @include('branding.header')
     
     <div class="container mt-4">
         <h2>Estimates</h2>
@@ -109,7 +112,6 @@
         </table>
       </div>
     </div>
-    <script src="{{asset('New/customerScript.js')}}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Bundle JS (includes Popper) -->

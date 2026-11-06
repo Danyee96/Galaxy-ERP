@@ -1,6 +1,6 @@
 @extends('layouts.fullLayoutMaster')
 {{-- page title --}}
-@section('title','Login Page')
+@section('title','Sign in')
 {{-- page scripts --}}
 @section('page-styles')
 <link rel="stylesheet" type="text/css" href="{{asset('css/pages/authentication.css')}}">
@@ -17,7 +17,9 @@
           <div class="card disable-rounded-right mb-0 p-2 h-100 d-flex justify-content-center">
             <div class="card-header pb-1">
               <div class="card-title">
-                <h4 class="text-center mb-2">Welcome back</h4>
+                <div class="galaxy-auth-logo">@include('branding.logo')</div>
+                <h4 class="text-center mb-1">Welcome back</h4>
+                <p class="galaxy-auth-subtitle">Sign in to your Galaxy Inverter workspace.</p>
               </div>
             </div>
             <div class="card-body">
@@ -64,7 +66,7 @@
                         </div>
                         <!-- <div class="text-right"><a href="auth-forgot-password.html" class="card-link"><small>Forgot Password?</small></a></div> -->
                     </div>
-                    <button type="submit" class="btn btn-primary glow w-100 position-relative">Login<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
+                    <button type="submit" class="btn btn-primary glow w-100 position-relative">Sign in<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
                 </form>
               <hr>
               <!-- <div class="text-center">
@@ -76,9 +78,11 @@
         </div>
         <!-- right section image -->
         <div class="col-md-6 d-md-block d-none brand-auth-panel">
-          <i class="bx bx-shield-quarter brand-auth-icon" aria-hidden="true"></i>
-          <h2>AutoPower</h2>
-          <p>Warranty claims, inventory, and machine testing.<br>Everything you need, in one place.</p>
+          <span class="galaxy-auth-eyebrow">GALAXY INVERTER / ERP</span>
+          <div class="galaxy-orbit" aria-hidden="true"><i class="bx bx-sun"></i></div>
+          <h2>Powering your<br>operations.</h2>
+          <p>From the first component to the final delivery. Manage inventory, production, testing, and service in one connected workspace.</p>
+          <div class="galaxy-auth-pills"><span>Inventory</span><span>Production</span><span>Service</span></div>
         </div>
       </div>
     </div>

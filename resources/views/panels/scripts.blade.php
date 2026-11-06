@@ -31,3 +31,14 @@
     @yield('page-scripts')
     <!-- END: Page JS-->
 <script src="{{ asset('assets/js/biztally.js') }}?v={{ filemtime(public_path('assets/js/biztally.js')) }}"></script>
+
+<script>
+(function(){
+  function ready(){window.dispatchEvent(new Event('erp:list-selects-ready'));}
+  if(window.jQuery && jQuery.fn.select2){ready();return;}
+  var script=document.createElement('script');
+  script.src=@json(asset('vendors/js/forms/select/select2.full.min.js'));
+  script.onload=ready;
+  document.head.appendChild(script);
+})();
+</script>

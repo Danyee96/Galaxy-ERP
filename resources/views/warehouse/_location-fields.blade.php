@@ -1,0 +1,2 @@
+<label>Warehouse</label><select name="warehouse_id" required class="form-control">@foreach($warehouses->where('active',1)->where('code','!=','INTERNAL-TRANSIT') as $w)<option value="{{ $w->id }}">{{ $w->name }}</option>@endforeach</select>
+<label>Choose rack / row / column</label><select name="location_id" required class="form-control" data-location-select>@foreach($locations->where('kind','physical')->where('active',1) as $l)<option value="{{ $l->id }}" data-warehouse="{{ $l->warehouse_id }}">{{ $l->label }}</option>@endforeach</select>

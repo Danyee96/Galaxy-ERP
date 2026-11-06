@@ -5,16 +5,7 @@
     <ul class="nav navbar-nav flex-row">
       <li class="nav-item">
       <a class="navbar-brand" href="{{asset('/')}}">
-          <div class="brand-logo">
-          <img src="{{asset('images/logo/logo-light.png')}}" class="logo" alt="">
-          </div>
-          <h2 class="brand-text mb-0">
-            @if(!empty($configData['templateTitle']) && isset($configData['templateTitle']))
-            {{$configData['templateTitle']}}
-            @else
-            Frest
-            @endif
-          </h2>
+          @include('branding.logo')
         </a>
       </li>
     </ul>
@@ -36,7 +27,7 @@
             <li class="nav-item d-none d-lg-block"><a class="nav-link bookmark-star"><i class="ficon bx bx-star warning"></i></a>
               <div class="bookmark-input search-input">
                 <div class="bookmark-input-icon"><i class="bx bx-search primary"></i></div>
-                <input class="form-control input" type="text" placeholder="Explore Frest..." tabindex="0" data-search="template-search">
+                <input class="form-control input" type="text" placeholder="Search Galaxy Inverter..." tabindex="0" data-search="template-search">
                 <ul class="search-list"></ul>
               </div>
             </li>
@@ -63,7 +54,7 @@
           <li class="nav-item nav-search"><a class="nav-link nav-link-search pt-2"><i class="ficon bx bx-search"></i></a>
             <div class="search-input">
               <div class="search-input-icon"><i class="bx bx-search primary"></i></div>
-              <input class="input" type="text" placeholder="Explore Frest..." tabindex="-1" data-search="template-search">
+              <input class="input" type="text" placeholder="Search Galaxy Inverter..." tabindex="-1" data-search="template-search">
               <div class="search-input-close"><i class="bx bx-x"></i></div>
               <ul class="search-list"></ul>
             </div>

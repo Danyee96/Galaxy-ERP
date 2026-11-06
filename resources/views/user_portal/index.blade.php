@@ -1,243 +1,71 @@
 @extends('layouts.contentLayoutMaster')
-{{-- page Title --}}
-@section('title','Welcome to Dashboard')
-{{-- vendor css --}}
+@section('title', 'Dashboard')
 @section('vendor-styles')
-<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/charts/apexcharts.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/extensions/swiper.min.css')}}">
-@endsection
-@section('page-styles')
-<link rel="stylesheet" type="text/css" href="{{asset('css/pages/dashboard-ecommerce.css')}}">
+<link rel="stylesheet" href="{{ asset('vendors/css/charts/apexcharts.css') }}">
 @endsection
 
 @section('content')
-<?php
-function format_number_in_k_notation($number)
-{
-  if ($number < 1000) {
-  return sprintf('%d', $number);
-  }
+<div class="erp-dashboard" id="dashboard-ecommerce" data-legacy-charts="{{ is_file(public_path('js/custom_charts/chart-one.js')) ? 'true' : 'false' }}">
+  <x-erp.page-header title="Operations overview" description="Service workload, repair progress, and case distribution." eyebrow="Galaxy Inverter / Workspace">
+    @if(Auth::user()->role_id == 1)
+    <x-slot name="actions">
+      <a class="btn btn-outline-primary" href="{{ route('reporting') }}"><i class="bx bx-file" aria-hidden="true"></i> View reports</a>
+      <a class="btn btn-primary" href="{{ route('searchMachine') }}"><i class="bx bx-search" aria-hidden="true"></i> Find a machine</a>
+    </x-slot>
+    @endif
+  </x-erp.page-header>
+  @if(($overdueTransitCount ?? 0) > 0)
+  <div class="alert alert-danger" role="status"><strong>{{ $overdueTransitCount }} overdue in-transit {{ $overdueTransitCount == 1 ? 'shipment' : 'shipments' }}.</strong> Awaiting full receipt. <a class="alert-link" href="{{ route('inTransitInventory', ['overdue' => 1]) }}">Review delayed inventory</a></div>
+  @endif
 
-  if ($number < 1000000) {
-  return sprintf('%d%s', floor($number / 1000), 'K+');
-  }
+  @if(Auth::user()->role_id == 1)
+  <section class="erp-workload" aria-labelledby="erp-workload-title">
+    <div class="erp-section-heading"><h2 id="erp-workload-title">Service workload</h2><span>All time</span></div>
+    <dl class="erp-stat-grid">
+      <x-erp.stat label="Total cases" :value="$total_complains" caption="All logged service cases" />
+      <x-erp.stat label="Pending repairs" :value="$total_pending_complains" :href="route('pending-overall-complains')" tone="warning" caption="Cases awaiting resolution" />
+      <x-erp.stat label="Resolved cases" :value="$total_completed_complains" :href="route('resolved-overall-complains')" tone="success" caption="Completed service cases" />
+    </dl>
+    <div class="erp-monthly">
+      <div class="erp-monthly-label"><h3>{{ now()->format('F Y') }}</h3><span>Cases logged this month</span></div>
+      <dl class="erp-monthly-stats">
+        <x-erp.stat label="Total" :value="$total_monthly_complains" />
+        <x-erp.stat label="Pending" :value="$total_monthly_pending_complains" :href="route('pending-monthly-complains')" tone="warning" />
+        <x-erp.stat label="Resolved" :value="$total_monthly_completed_complains" :href="route('resolved-monthly-complains')" tone="success" />
+      </dl>
+    </div>
+  </section>
 
-  if ($number >= 1000000 && $number < 1000000000) {
-  return sprintf('%d%s', floor($number / 1000000), 'M+');
-  }
+  <x-erp.chart-panel id="delivery-comparison-chart" title="Service intake & deliveries" :description="now()->format('F Y').' · Daily case volumes'" type="line" :labels="array_values($monthly_days_arr)" :series="[['name' => 'Intake', 'data' => array_values($monthly_in_count_arr)], ['name' => 'Delivered', 'data' => array_values($monthly_out_count_arr)]]" empty="No service activity recorded for this period." />
 
-  if ($number >= 1000000000 && $number < 1000000000000) {
-  return sprintf('%d%s', floor($number / 1000000000), 'B+');
-  }
-
-  return sprintf('%d%s', floor($number / 1000000000000), 'T+');
-}
-?>
-<div class="brand-hero"><h1>Dashboard</h1><p>Welcome back, {{ Auth::user()->name }}. Here’s your operations overview.</p></div>
-<!-- Dashboard Ecommerce Starts -->
-@if(Auth::user()->role_id == 1)
-<section id="dashboard-ecommerce">
-  <div class="row">
-    <div class="col-xl-12 col-12 dashboard-users">
-      <div class="row  ">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-sm-4 col-12 dashboard-users-success">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-primary mx-auto mb-50">
-                    <i class="bx bx-error font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis">Overall Complains</div>
-                  <h3 class="mb-0">{{$total_complains}}</h3>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4 col-12 dashboard-users-danger">
-              <a href="{{route('pending-overall-complains')}}">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-danger mx-auto mb-50">
-                    <i class="bx bxs-error font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis">Overall Pending Complains</div>
-                  <h3 class="mb-0">{{format_number_in_k_notation($total_pending_complains)}}</h3>
-                </div>
-              </div>
-              </a>
-            </div>
-            <div class="col-sm-4 col-12 dashboard-users-danger">
-              <a href="{{route('resolved-overall-complains')}}">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-success mx-auto mb-50">
-                    <i class="bx bx-check-circle font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis">Overall Resolved Complains</div>
-                  <h3 class="mb-0">{{format_number_in_k_notation($total_completed_complains)}}</h3>
-                </div>
-              </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-12 col-12 dashboard-users">
-      <div class="row  ">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-sm-4 col-12 dashboard-users-success">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-primary mx-auto mb-50">
-                    <i class="bx bx-error font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis"><?php echo date('F'); ?> Complains</div>
-                  <h3 class="mb-0">{{$total_monthly_complains}}</h3>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4 col-12 dashboard-users-danger">
-              <a href="{{route('pending-monthly-complains')}}">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-danger mx-auto mb-50">
-                    <i class="bx bxs-error font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis"><?php echo date('F'); ?> Pending Complains</div>
-                  <h3 class="mb-0">{{format_number_in_k_notation($total_monthly_pending_complains)}}</h3>
-                </div>
-              </div>
-              </a>
-            </div>
-            <div class="col-sm-4 col-12 dashboard-users-danger">
-              <a href="{{route('resolved-monthly-complains')}}">
-              <div class="card text-center">
-                <div class="card-body py-1">
-                  <div class="badge-circle badge-circle-lg badge-circle-light-success mx-auto mb-50">
-                    <i class="bx bx-check-circle font-medium-5"></i>
-                  </div>
-                  <div class="text-muted line-ellipsis"><?php echo date('F'); ?> Resolved Complains</div>
-                  <h3 class="mb-0">{{format_number_in_k_notation($total_monthly_completed_complains)}}</h3>
-                </div>
-              </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="erp-section-heading erp-breakdown-heading"><h2>Service breakdown</h2><span>All logged cases</span></div>
+  <div class="erp-chart-grid">
+    <x-erp.chart-panel id="pie-chart-custom" title="Cases by company" description="Distribution across registered companies" type="pie" :labels="array_values($company_name)" :series="[['name' => 'Cases', 'data' => array_values($company_data)]]" />
+    <x-erp.chart-panel id="donut-chart-custom" title="Cases by power rating" description="Distribution across power ratings" :labels="array_values($power_name)" :series="[['name' => 'Cases', 'data' => array_values($power_data)]]" />
+    <x-erp.chart-panel id="pie-chart-custom-one" title="Reported faults" description="Cases grouped by error code" type="pie" :labels="array_values($error_name)" :series="[['name' => 'Cases', 'data' => array_values($error_data)]]" />
+    <x-erp.chart-panel id="donut-chart-custom-one" title="Accessories received" description="Accessory records associated with service cases" :labels="array_values($accessory_name)" :series="[['name' => 'Records', 'data' => array_values($accessory_data)]]" />
   </div>
-  <div class="row">
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Company Ratio</h4>
-        </div>
-        <div class="card-body">
-          <script type="text/javascript">
-            var company_data = @json($company_data);
-            company_data = Object.values(company_data);
-            //
-            var company_name = @json($company_name);
-            company_name = Object.values(company_name);
-          </script>
-          <div id="pie-chart-custom" class="d-flex justify-content-center"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Power Ratio</h4>
-        </div>
-        <div class="card-body">
-          <script type="text/javascript">
-            var power_data = @json($power_data);
-            power_data = Object.values(power_data);
-            //
-            var power_name = @json($power_name);
-            power_name = Object.values(power_name);
-          </script>
-          <div id="donut-chart-custom" class="d-flex justify-content-center"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-12 col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Complain Resolution Comparison</h4>
-        </div>
-        <div class="card-body">
-          <script type="text/javascript">
-            var monthly_days_arr = @json($monthly_days_arr);
-            monthly_days_arr = Object.values(monthly_days_arr);
-            //
-            var monthly_in_count_arr = @json($monthly_in_count_arr);
-            monthly_in_count_arr = Object.values(monthly_in_count_arr);
-            //
-            var monthly_out_count_arr = @json($monthly_out_count_arr);
-            monthly_out_count_arr = Object.values(monthly_out_count_arr);
-          </script>
-          <div id="delivery-comparison-chart"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Error Ratio</h4>
-        </div>
-        <div class="card-body">
-          <script type="text/javascript">
-            var error_data = @json($error_data);
-            error_data = Object.values(error_data);
-            //
-            var error_name = @json($error_name);
-            error_name = Object.values(error_name);
-          </script>
-          <div id="pie-chart-custom-one" class="d-flex justify-content-center"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Accessories Ratio</h4>
-        </div>
-        <div class="card-body">
-          <script type="text/javascript">
-            var accessory_data = @json($accessory_data);
-            accessory_data = Object.values(accessory_data);
-            //
-            var accessory_name = @json($accessory_name);
-            accessory_name = Object.values(accessory_name);
-          </script>
-          <div id="donut-chart-custom-one" class="d-flex justify-content-center"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-@else
-<section id="dashboard-ecommerce">
-  <br>
-  <h1 style="text-align: center;">Welcome to AutoPower Warranty System</h1>
-</section>
-@endif
-<!-- Dashboard Ecommerce ends -->
+  @else
+    <section class="erp-panel erp-welcome"><i class="bx bx-grid-alt" aria-hidden="true"></i><h2>Welcome, {{ Auth::user()->name }}</h2><p>Your workspace is ready. Choose a module from the navigation, or search for a page above.</p></section>
+  @endif
+</div>
 @endsection
 
 @section('vendor-scripts')
-<script src="{{asset('vendors/js/charts/apexcharts.min.js')}}"></script>
-<script src="{{asset('vendors/js/extensions/swiper.min.js')}}"></script>
+<script src="{{ asset('vendors/js/charts/apexcharts.min.js') }}"></script>
 @endsection
-
 @section('page-scripts')
-<script src="{{asset('js/custom_charts/chart-one.js')}}"></script>
+{{-- Retain the existing chart contract when a deployed initializer is available. --}}
+<script>
+var company_data = Object.values(@json($company_data)), company_name = Object.values(@json($company_name));
+var power_data = Object.values(@json($power_data)), power_name = Object.values(@json($power_name));
+var error_data = Object.values(@json($error_data)), error_name = Object.values(@json($error_name));
+var accessory_data = Object.values(@json($accessory_data)), accessory_name = Object.values(@json($accessory_name));
+var monthly_days_arr = Object.values(@json($monthly_days_arr)), monthly_in_count_arr = Object.values(@json($monthly_in_count_arr)), monthly_out_count_arr = Object.values(@json($monthly_out_count_arr));
+</script>
+@if(is_file(public_path('js/custom_charts/chart-one.js')))
+<script src="{{ asset('js/custom_charts/chart-one.js') }}"></script>
+@else
+<script src="{{ asset('brand/erp-dashboard.js') }}?v={{ filemtime(public_path('brand/erp-dashboard.js')) }}" defer></script>
+@endif
 @endsection

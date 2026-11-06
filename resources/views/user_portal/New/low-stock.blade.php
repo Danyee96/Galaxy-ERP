@@ -19,9 +19,11 @@
       rel="stylesheet"
     />
     <script src="{{asset('New/script.js')}}"></script>
-    <title>Product & Services</title>
+    <title>Product & Services | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Product & Services</h2>
       <!-- Tabs Section -->

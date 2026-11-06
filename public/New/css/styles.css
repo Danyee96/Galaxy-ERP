@@ -13,7 +13,7 @@ body{
 }
 .nav-tabs .nav-link.active {
     color: #000;
-    border-bottom: 3px solid #28a745;
+    border-bottom: 3px solid #247fb6;
 }
 .card {
     border: none;
@@ -34,11 +34,11 @@ body{
     font-size: 50px;
 }
 .nav-link .active{
-    border-bottom: #28a745 !important;
+    border-bottom: #247fb6 !important;
     border: none !important;
 }
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
-    border-color: #28a745 !important;
+    border-color: #247fb6 !important;
 }
 
 
@@ -73,7 +73,7 @@ body{
 }
 .content-card ul li::before {
     content: '\2022';
-    color: #28a745;
+    color: #247fb6;
     font-weight: bold;
     display: inline-block;
     width: 1em;
@@ -240,7 +240,7 @@ body{
     /* height: 50px;
     width: 50px;
     margin-right: 15px; */
-    background: #d52b1e url(https://warranty.autopower.pk/New/images/no_stock.png) no-repeat 14px 22px !important;
+    background: #d52b1e url(../images/no_stock.png) no-repeat 14px 22px !important;
     width: 120px;
     height: 120px;
     border-radius: 50% !important;
@@ -250,7 +250,7 @@ body{
     margin-right: 30px;
 }
 .low-stock-img{
-    background: #ff8000 url(https://warranty.autopower.pk/New/images/low_stock.png) no-repeat 14px 22px !important;
+    background: #ff8000 url(../images/low_stock.png) no-repeat 14px 22px !important;
     width: 120px;
     height: 120px;
     border-radius: 50% !important;
@@ -260,7 +260,7 @@ body{
     margin-right: 30px;
 }
 .air-stock-img {
-    background: #31EFBB url(https://warranty.autopower.pk/New/images/air_stock.jpeg) no-repeat 14px 22px !important;
+    background: #31EFBB url(../images/air_stock.jpeg) no-repeat 14px 22px !important;
     width: 120px;
     height: 120px;
     border-radius: 50% !important;
@@ -270,7 +270,7 @@ body{
     margin-right: 30px;
 }
 .sea-stock-img{
-    background: #34CFEF url(https://warranty.autopower.pk/New/images/sea_stock.png) no-repeat 14px 22px !important;
+    background: #34CFEF url(../images/sea_stock.png) no-repeat 14px 22px !important;
     width: 120px;
     height: 120px;
     border-radius: 50% !important;
@@ -496,7 +496,7 @@ body{
     position: relative;
     transition: all .08s ease-in;
     margin: 20px 15px 20px 30px;
-    background: #0077c5 url(https://warranty.autopower.pk/New/images/box.png) no-repeat;
+    background: #0077c5 url(../images/box.png) no-repeat;
     background-position: 24px;
     flex: 1;
 }
@@ -509,7 +509,7 @@ body{
     position: relative;
     transition: all .08s ease-in;
     margin: 20px 15px 20px 30px;
-    background: #0077c5 url(https://warranty.autopower.pk/New/images/shirt.png) no-repeat;
+    background: #0077c5 url(../images/shirt.png) no-repeat;
     background-position: 24px;
     flex: 1;
 }
@@ -521,7 +521,7 @@ body{
     position: relative;
     transition: all .08s ease-in;
     margin: 20px 15px 20px 30px;
-    background: #0077c5 url(https://warranty.autopower.pk/New/images/bundle.png) no-repeat;
+    background: #0077c5 url(../images/bundle.png) no-repeat;
     background-position: 24px;
     flex: 1;
 }
@@ -533,7 +533,7 @@ body{
     position: relative;
     transition: all .08s ease-in;
     margin: 20px 15px 20px 30px;
-    background: #0077c5 url(https://warranty.autopower.pk/New/images/brush.png) no-repeat;
+    background: #0077c5 url(../images/brush.png) no-repeat;
     background-position: 24px;
     flex: 1;
 }

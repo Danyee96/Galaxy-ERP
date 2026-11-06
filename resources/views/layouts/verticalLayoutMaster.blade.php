@@ -1,5 +1,5 @@
 <!-- BEGIN: Body-->
-<body class="vertical-layout vertical-menu-modern 2-columns
+<body class="erp-shell vertical-layout vertical-menu-modern 2-columns
 @if($configData['isMenuCollapsed'] == true){{'menu-collapsed'}}@endif
 @if($configData['theme'] === 'dark'){{'dark-layout'}} @elseif($configData['theme'] === 'semi-dark'){{'semi-dark-layout'}} @else {{'light-layout'}} @endif
 @if($configData['isContentSidebar'] === true) {{'content-left-sidebar'}} @endif @if(isset($configData['navbarType'])){{$configData['navbarType']}}@endif
@@ -9,6 +9,7 @@
 @if($configData['isCardShadow'] === false){{'no-card-shadow'}}@endif"
 data-open="click" data-menu="vertical-menu-modern" data-col="2-columns" data-framework="laravel">
 
+  <a class="erp-skip-link" href="#erp-main">Skip to main content</a>
   <!-- BEGIN: Header-->
   @include('panels.navbar')
   <!-- END: Header-->
@@ -18,7 +19,7 @@ data-open="click" data-menu="vertical-menu-modern" data-col="2-columns" data-fra
   <!-- END: Main Menu-->
 
   <!-- BEGIN: Content-->
-  <div class="app-content content">
+  <main class="app-content content" id="erp-main" tabindex="-1">
   {{-- Application page structure --}}
 	@if($configData['isContentSidebar'] === true)
 		<div class="content-area-wrapper">
@@ -52,7 +53,7 @@ data-open="click" data-menu="vertical-menu-modern" data-col="2-columns" data-fra
 			</div>
 		</div>
 	@endif
-  </div>
+  </main>
   <!-- END: Content-->
   @if($configData['isCustomizer'] === true && isset($configData['isCustomizer']))
   <!-- BEGIN: Customizer-->

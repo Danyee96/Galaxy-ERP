@@ -30,12 +30,15 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') - Autopower - Warranty Claim System</title>
-    <link rel="apple-touch-icon" href="{{asset('images/ico/apple-icon-120.png')}}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/ico/favicon.ico')}}">
+    <title>@yield('title') | {{ config('brand.name') }}</title>
 
     {{-- Include core + vendor Styles --}}
     @include('panels.styles')
+    <script>
+    try { var erpTheme = localStorage.getItem('galaxy-erp-theme'); document.documentElement.dataset.erpTheme = erpTheme === 'dark' || erpTheme === 'light' ? erpTheme : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) { document.documentElement.dataset.erpTheme = 'light'; }
+    </script>
+    <link rel="stylesheet" href="{{ asset('brand/erp.css') }}?v={{ filemtime(public_path('brand/erp.css')) }}">
+    <script src="{{ asset('brand/erp.js') }}?v={{ filemtime(public_path('brand/erp.js')) }}" defer></script>
     </head>
     <!-- END: Head-->
 

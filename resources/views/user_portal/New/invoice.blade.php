@@ -20,9 +20,11 @@
     <!-- Bootstrap Bundle JS (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <title>Invoice</title>
+    <title>Invoice | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Sales</h2>
       <!-- Tabs Section -->

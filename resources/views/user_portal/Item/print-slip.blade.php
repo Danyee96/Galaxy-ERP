@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Machine Slip</title>
+        <title>Machine Slip | {{ config('brand.name') }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -147,20 +147,18 @@
 
 
         </style>
+        @include('branding.print-head')
     </head>
     <body>
         <button class="btn btn-primary"><a style="color: white; text-decoration: none;" href="{{route('searchMachine')}}">Back</a></button>
         <div>
             <header class="row" style="width: 100%; margin-top: 20px;" class="clearfix">
                 <div id="logo">
-                    <img  height="60px" src="{{asset('images/logo.png')}}">
+                    <img  height="60px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('brand/galaxy-logo.png'))) }}">
                 </div>
-                <h1>AutoPower Warranty Slip</h1>
+                <h1>Galaxy Inverter Warranty Slip</h1>
                 <div style="float: right;" class="clearfix">
-                    <div>AutoPower</div>
-                    <div>Autopower Factory, M Din,<br> Walton Rd, Walton Railway<br> Officers Colony, Lahore, Punjab</div>
-                    <div>+92 303 4288266</div>
-                    <div>info@autopower.pk</div>
+                    @include('branding.contact')
                     <br>
                 </div>
                 <div style="float: left; margin-left: 40px;">

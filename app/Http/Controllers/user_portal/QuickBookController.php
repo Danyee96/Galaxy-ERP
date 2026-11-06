@@ -232,18 +232,15 @@ class QuickBookController extends Controller
 
     public function inTransitInventory(Request $request)
     {
-        if($request->transit_method)
-        {
-            $transit_method = $request->transit_method;
-            $product_inventories = ProductInventory::where('transit_id', $transit_method)->where('status', 0)->get();
-        }
-        else
-        {
-            $product_inventories = ProductInventory::whereIn('transit_id', [1,2,3])->where('status', 0)->get();
-        }
+        $request->validate(['transit_method' => 'nullable|integer|in:1,2,3', 'overdue' => 'nullable|boolean']);
+        $query = ProductInventory::with(['productDetails', 'entryBy'])->whereIn('transit_id', [1, 2, 3])->where('status', 0);
+        if ($request->filled('transit_method')) $query->where('transit_id', $request->transit_method);
+        if ($request->boolean('overdue')) $query->overdue();
+        $product_inventories = $query->get();
+        $overdue_count = ProductInventory::overdue()->count();
         $air_transit = ProductInventory::where('transit_id', 2)->where('status', 0)->count();
         $sea_transit = ProductInventory::where('transit_id', 3)->where('status', 0)->count();
-        return view('user_portal.New.transit', ['sea_transit' => $sea_transit, 'air_transit' => $air_transit, 'product_inventories' => $product_inventories]);
+        return view('user_portal.New.transit', compact('sea_transit', 'air_transit', 'product_inventories', 'overdue_count'));
     }
 
     public function receivedTransitInventory()
@@ -325,6 +322,14 @@ class QuickBookController extends Controller
 
     public function markReceivedTransit($id)
     {
+        if (config('warehouses.enabled')) {
+            $request = request();
+            $document = ProductInventory::findOrFail($id);
+            $quantity = ($document->stock_in - $document->received_stock);
+            app(\App\Services\Warehouse\Inventory::class)->receiveTransit(['request_key'=>$request->warehouse_request_key, 'document_type'=>'product', 'document_id'=>$document->id, 'quantity'=>(string)$quantity, 'location_id'=>(int)($request->destination_location_id ?: \DB::table('warehouse_state')->where('key','default_location')->value('value')), 'date'=>today()->toDateString()]);
+            return ($document->fresh()->status == 1 ? redirect()->route('receivedTransitInventory') : redirect()->back())->with('message','Stock received into the selected warehouse location.');
+        }
+
         $receivedBy = Auth::user()->id;
         $find_inventory = ProductInventory::where('id', $id)->first();
         $find_inventory->update(['status' => 1, 'received_by' => $receivedBy]);
@@ -350,6 +355,14 @@ class QuickBookController extends Controller
 
     public function markReceivedTransitNew(Request $request)
     {
+        if (config('warehouses.enabled')) {
+            $request = request();
+            $document = ProductInventory::findOrFail($request->product_id);
+            $quantity = $request->new_quantity;
+            app(\App\Services\Warehouse\Inventory::class)->receiveTransit(['request_key'=>$request->warehouse_request_key, 'document_type'=>'product', 'document_id'=>$document->id, 'quantity'=>(string)$quantity, 'location_id'=>(int)($request->destination_location_id ?: \DB::table('warehouse_state')->where('key','default_location')->value('value')), 'date'=>today()->toDateString()]);
+            return ($document->fresh()->status == 1 ? redirect()->route('receivedTransitInventory') : redirect()->back())->with('message','Stock received into the selected warehouse location.');
+        }
+
         // dd($request->all());
         $receivedBy = Auth::user()->id;
         $id = $request->product_id;
@@ -569,13 +582,20 @@ class QuickBookController extends Controller
 
     public function productEstimates()
     {
-        $datas = ProductEstimate::where('status', 1)->get();
-        return view('user_portal.New.estimates', ['datas' => $datas]);
+        $filters = request()->validate(['search' => 'nullable|string|max:255', 'kind' => 'nullable|in:planning,legacy']);
+        $query = ProductEstimate::with(['systems', 'bundleDetails', 'estimateDetails.productDetails'])->where('status', 1);
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) { $q->where('title', 'like', '%'.$filters['search'].'%')->orWhere('number', 'like', '%'.$filters['search'].'%'); });
+        }
+        if (($filters['kind'] ?? '') === 'planning') $query->whereNotNull('planning_version');
+        if (($filters['kind'] ?? '') === 'legacy') $query->whereNull('planning_version');
+        return view('user_portal.New.estimates', ['datas' => $query->latest('id')->paginate(25)->withQueryString()]);
     }
 
     public function createProductEstimates()
     {
-        $pageConfigs = ['pageHeader' => true];
+        if (config('warehouses.enabled')) abort_unless(in_array((int) Auth::user()->role_id,[1,4,5],true),403);
+        $pageConfigs = ['pageHeader' => false];
         $breadcrumbs = [
           ["link" => "/", "name" => "Home"],["link" => "/product-estimates", "name" => "Product Estimates List"],["name" => "Check Product Estimate"]
         ];
@@ -591,7 +611,7 @@ class QuickBookController extends Controller
             $estimate_number = 1000 + $number;
         }
 
-        $all_products = Products::where('type', 'Bundle')->where('status',1)->get();
+        $all_products = Products::where('type', 'Bundle')->where('status',1)->orderBy('name')->get(['id', 'name', 'sku']);
         return view('user_portal.New.create-estimate',['pageConfigs'=>$pageConfigs,'breadcrumbs'=>$breadcrumbs, 'all_products' => $all_products, 'estimate_number' => $estimate_number]);
     }
 
@@ -659,80 +679,23 @@ class QuickBookController extends Controller
 
     public function saveProductEstimates(Request $request)
     {
-        $qty = $request->qty;
-        $bundle_id = $request->id;
-        $title = $request->title;
-        $estimate_number = $request->estimate_number;
-
-        $product_estimate_data = [
-            'title' => $title,
-            'bundle_id' => $bundle_id,
-            'number' => $estimate_number,
-            'quantity' => $qty,
-            'status' => 1,
-        ];
-
-        $product_estimate = ProductEstimate::create($product_estimate_data);
-
-        $getRecipes = Bundle::where('bundle_id', $bundle_id)->get();
-        if(count($getRecipes) > 0)
-        {
-            foreach($getRecipes as $recipe)
-            {
-                if($recipe->productDetails->temp_qty >= ($recipe->quantity * $qty))
-                {
-                    $actual_final_qty = 0;
-                }
-                else
-                {
-                    $actual_final_qty = $recipe->productDetails->temp_qty - ($recipe->quantity * $qty);
-                }
-
-                $recipe_value = $recipe->productDetails->temp_qty - ($recipe->quantity * $qty);
-                if($recipe_value < 0)
-                {
-                    $recipe_value_new = 0;
-                }
-                else
-                {
-                    $recipe_value_new = $recipe_value;
-                }
-                $find_inventory = Products::where('id', $recipe->product_id)->first();
-
-                $find_inventory->update(['temp_qty' => $recipe_value_new]);
-
-                $product_estimate_value_data = [
-                    'estimate_id' => $product_estimate->id,
-                    'bundle_id' => $bundle_id,
-                    'product_id' => $recipe->product_id,
-                    'quantity_in_stock' => $recipe->quantity * $qty,
-                    'quantity_needed' => $actual_final_qty,
-                ];
-
-                EstimateValue::create($product_estimate_value_data);
-            }
-
-            $data = [
-                'status' => 1,
-                'message' => 'Estimation Saved Successfully!',
-            ];
-
-            return response()->json(['response' => $data]);
-        }
-        else
-        {
-            $data = [
-                'status' => 0,
-                'message' => 'Bundle Recipe Not Exists, please add Bundle Recipe First',
-            ];
-
-            return response()->json(['response' => $data]);
+        $input = $request->validate(['id' => 'required|integer|min:1', 'qty' => 'required|integer|min:1|max:1000000', 'title' => 'required|string|max:255']);
+        try {
+            $estimate = app(\App\Services\Estimation\ProductionEstimationPlanner::class)->saveLegacy($input);
+            return response()->json(['response' => ['status' => 1, 'message' => 'Estimation Saved Successfully!', 'number' => $estimate->number, 'id' => $estimate->id]]);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['response' => ['status' => 0, 'message' => $e->getMessage()]]);
         }
     }
 
     public function SingleEstimateDownload($id)
     {
-        $estimate = ProductEstimate::where('id', $id)->with(['estimateDetails.productDetails'])->first();
+        abort_unless(in_array((int) Auth::user()->role_id, [1, 4, 5], true), 403);
+        $estimate = ProductEstimate::where('id', $id)->with(['estimateDetails.productDetails'])->firstOrFail();
+        if ($estimate->planning_version) {
+            abort_unless(in_array((int) Auth::user()->role_id, [1, 4, 5], true), 403);
+            return view('user_portal.estimation.print', ['estimate' => $estimate, 'plan' => $estimate->planningSnapshot()]);
+        }
         $estimate->estimateDetails = $estimate->estimateDetails->sortBy(function ($detail) {
             return $detail->productDetails->category;
         });
@@ -828,6 +791,7 @@ class QuickBookController extends Controller
     public function deleteEstimate($id)
     {
         $find_estimate = ProductEstimate::where('id', $id)->first();
+        abort_if($find_estimate && $find_estimate->planning_version, 405, 'Use the production-plan archive action.');
 
         $find_estimate_values = EstimateValue::where('estimate_id', $find_estimate->id)->get();
         if(count($find_estimate_values) > 0)
@@ -846,45 +810,46 @@ class QuickBookController extends Controller
         return redirect()->back();
     }
 
-    public function getInvoice()
+    public function getInvoice(Request $request)
     {
-        $datas = Invoice::with(['invoiceDetails.productDetails'])->orderBy('id', 'DESC')->paginate(10); // 10 per page
-        $number = 1;
-        $data = Invoice::orderBy('id','DESC')->first();
-        if(!empty($data))
-        {
-            $invoice_number = $data->invoice_number + $number;
+        $filters = $request->validate([
+            'search' => 'nullable|string|max:255', 'invoice_number' => 'nullable|string|max:100',
+            'invoice_name' => 'nullable|string|max:255',
+            'date_from' => 'nullable|date_format:Y-m-d',
+            'date_to' => 'nullable|date_format:Y-m-d'.($request->filled('date_from') ? '|after_or_equal:date_from' : ''),
+            'sort' => 'nullable|in:date,number,title,quantity', 'direction' => 'nullable|in:asc,desc',
+            'page' => 'nullable|integer|min:1',
+        ]);
+        // This issuance ledger stores quantities only; it has no monetary/payment/customer fields.
+        foreach (['customer', 'status', 'payment_status', 'amount_min', 'amount_max'] as $unsupported) {
+            if ($request->filled($unsupported)) throw \Illuminate\Validation\ValidationException::withMessages([$unsupported => 'This invoice ledger does not record customer links, monetary amounts, or payment statuses.']);
         }
-        else
-        {
-            $invoice_number = 1000 + $number;
-        }
-        $query = Invoice::with(['invoiceDetails.productDetails'])->orderBy('id', 'DESC');
-        $search = request()->input('search');
-        if ($search) {
-            $query->where(function($q) use ($search) {
+        $query = Invoice::query();
+        $search = trim($filters['search'] ?? '');
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
                 $q->where('invoice_number', 'like', "%$search%")
-                  ->orWhere('invoice_name', 'like', "%$search%")
-                  ->orWhereHas('invoiceDetails.productDetails', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%$search%")
-                          ->orWhere('sku', 'like', "%$search%")
-                          ->orWhere('id', 'like', "%$search%")
-                          ;
-                  });
+                    ->orWhere('invoice_name', 'like', "%$search%")
+                    ->orWhereHas('invoiceDetails.productDetails', function ($products) use ($search) {
+                        $products->where('name', 'like', "%$search%")->orWhere('sku', 'like', "%$search%")->orWhere('id', 'like', "%$search%");
+                    });
             });
         }
-        $datas = $query->paginate(25)->appends(['search' => $search]); // 25 per page
-        $number = 1;
-        $data = Invoice::orderBy('id','DESC')->first();
-        if(!empty($data))
-        {
-            $invoice_number = $data->invoice_number + $number;
+        foreach (['invoice_number', 'invoice_name'] as $field) {
+            if (isset($filters[$field]) && trim($filters[$field]) !== '') $query->where($field, 'like', '%'.trim($filters[$field]).'%');
         }
-        else
-        {
-            $invoice_number = 1000 + $number;
-        }
-        return view('user_portal.New.invoice-new', ['invoice_number' => $invoice_number, 'datas' => $datas, 'search' => $search]);
+        if (!empty($filters['date_from'])) $query->where('created_at', '>=', $filters['date_from'].' 00:00:00');
+        if (!empty($filters['date_to'])) $query->where('created_at', '<', Carbon::parse($filters['date_to'])->addDay()->format('Y-m-d').' 00:00:00');
+        $summary = (clone $query)->selectRaw('COUNT(*) as invoice_count, COALESCE(SUM(total_count), 0) as item_count')->first();
+        $sortColumns = ['date' => 'created_at', 'number' => 'invoice_number', 'title' => 'invoice_name', 'quantity' => 'total_count'];
+        $query->orderBy($sortColumns[$filters['sort'] ?? 'date'], $filters['direction'] ?? 'desc')->orderBy('id', $filters['direction'] ?? 'desc');
+        $datas = $query->with(['invoiceDetails.productDetails'])->paginate(25)->appends(collect($filters)->except('page')->all());
+        $lastInvoice = Invoice::orderBy('id', 'DESC')->first(['invoice_number']);
+        $invoice_number = $lastInvoice ? $lastInvoice->invoice_number + 1 : 1001;
+        $viewData = compact('invoice_number', 'datas', 'search', 'summary', 'filters');
+        $viewData['hasInvoices'] = $lastInvoice !== null;
+        if ($request->ajax()) return view('user_portal.New.invoice-results', $viewData);
+        return view('user_portal.New.invoice-new', $viewData);
     }
 
     public function saveInvoice(Request $request)

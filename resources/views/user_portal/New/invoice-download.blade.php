@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Invoice</title>
+        <title>Invoice | {{ config('brand.name') }}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -147,19 +147,17 @@
 
 
         </style>
+        @include('branding.print-head')
     </head>
     <body>
         <div>
             <header class="row" style="width: 100%; margin-top: 20px;" class="clearfix">
                 <div id="logo">
-                    <img  height="60px" src="{{asset('images/logo.png')}}">
+                    <img  height="60px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('brand/galaxy-logo.png'))) }}">
                 </div>
                 <h1>Invoice Number # {{$data->invoice_number}}</h1>
                 <div style="float: right;" class="clearfix">
-                    <div>AutoPower</div>
-                    <div>Autopower Factory, M Din,<br> Walton Rd, Walton Railway<br> Officers Colony, Lahore, Punjab</div>
-                    <div>+92 303 4288266</div>
-                    <div>info@autopower.pk</div>
+                    @include('branding.contact')
                     <br>
                 </div>
                 <div style="float: left; margin-left: 40px;">
@@ -191,6 +189,11 @@
                 </tbody>
             </table>
         </div>
+
+            @if(config('warehouses.enabled') && Auth::check() && in_array((int)Auth::user()->role_id,[1,3,4,5],true))
+            @php($warehouseMovements = \App\Models\Warehouse\Movement::with(['item.source','source.warehouse','destination.warehouse','operation'])->whereHas('operation',fn($q)=>$q->where('reference','invoice:'.$data->invoice_number))->orderBy('id')->get())
+            @include('warehouse._stock-trace')
+            @endif
     </body>
 </html>
 

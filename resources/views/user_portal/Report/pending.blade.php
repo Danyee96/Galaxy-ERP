@@ -30,7 +30,7 @@
           </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" tabindex="0" role="region" aria-label="Pending complaints table; scroll horizontally to view all columns">
           <table class="table">
             <thead>
               <tr style="color:black">
@@ -41,7 +41,7 @@
                 <th style="min-width:70px">Power</th>
                 <th style="min-width:80px">Model</th>
                 <th style="min-width:60px">Error Code</th>
-                <th style="min-width: 140px">Error Discription</th>
+                <th style="min-width: 140px">Error Description</th>
                 <th style="min-width:150px">Entry<br>Date</th>
                 <th style="min-width:150px">Packing Status</th>
                 <th style="min-width:150px">Items Along with</th>
@@ -49,7 +49,7 @@
               </tr>
             </thead>
             <tbody style="color: black">
-              @foreach($machine_histories as $key => $machine_history)
+              @forelse($machine_histories as $key => $machine_history)
                 <tr class="filterRow" data-serial="{{$machine_history->Item->serial_number}}" data-customer="{{$machine_history->name}}" data-company="{{$machine_history->Company->name}}" data-error-code="{{$machine_history->Error ? $machine_history->Error->name : ''}}" data-packing="{{$machine_history->packing_status}}">
                   <td>{{ ++$key}}</td>
                   <td>{{$machine_history->Item->serial_number}}</td>
@@ -79,7 +79,9 @@
                     ?>
                   <td style="min-width:150px">{{$days}}</td>
                 </tr>
-              @endforeach              
+              @empty
+                <tr><td colspan="12" class="text-center text-muted py-3">No pending complaints found.</td></tr>
+              @endforelse
             </tbody>
           </table>
         </div>

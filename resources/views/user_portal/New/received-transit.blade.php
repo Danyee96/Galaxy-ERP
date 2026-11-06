@@ -18,9 +18,11 @@
       rel="stylesheet"
     />
     <script src="{{asset('New/script.js')}}"></script>
-    <title>Received Transit Inventory</title>
+    <title>Received Transit Inventory | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Received Transit Inventory</h2>
       <!-- Tabs Section -->

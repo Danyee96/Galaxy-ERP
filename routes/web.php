@@ -247,10 +247,31 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/save-assign-unit', [MachineTestingController::class, 'saveAssignUnit'])->name('save-assign-unit');
 
     //quickbook
+    Route::post('product-services', [QuickBookController::class, 'productService'])->name('productServiceWarehouse');
     Route::get('product-services', [QuickBookController::class, 'productService'])->name('productService');
     Route::get('product-categories', [QuickBookController::class, 'productCategories'])->name('productCategories');
     Route::get('low-stock-products', [QuickBookController::class, 'lowStockProducts'])->name('lowStockProducts');
     Route::get('out-stock-products', [QuickBookController::class, 'outStockProducts'])->name('outStockProducts');
+    Route::prefix('warehouses')->name('warehouses.')->group(function () {
+        $controller = \App\Http\Controllers\Warehouse\WarehouseController::class;
+        Route::get('/', [$controller, 'index'])->name('index');
+        Route::get('/production-availability', [$controller, 'productionAvailability'])->name('productionAvailability');
+        Route::get('/availability', [$controller, 'availability'])->name('availability');
+        Route::get('/context', [$controller, 'context'])->name('context');
+        Route::get('/unassigned', [$controller, 'unassigned'])->name('unassigned');
+        Route::post('/unassigned/assign', [$controller, 'assignUnassigned'])->name('assignUnassigned');
+        Route::post('/save', [$controller, 'saveWarehouse'])->name('save');
+        Route::post('/delete', [$controller, 'deleteWarehouse'])->name('delete');
+        Route::post('/locations', [$controller, 'saveLocation'])->name('locations');
+        Route::post('/reorder', [$controller, 'reorder'])->name('reorder');
+        Route::post('/movement', [$controller, 'post'])->name('post');
+        Route::post('/transit-receipt', [$controller, 'receipt'])->name('receipt');
+        Route::post('/transfer', [$controller, 'transfer'])->name('transfer');
+        Route::post('/quick-transfer', [$controller, 'quickTransfer'])->name('quickTransfer');
+        Route::get('/transfers', [$controller, 'transfers'])->name('transfers');
+        Route::post('/transfer/process', [$controller, 'processTransfer'])->name('process');
+        Route::get('/history', [$controller, 'history'])->name('history');
+    });
     Route::get('in-transit-inventory', [QuickBookController::class, 'inTransitInventory'])->name('inTransitInventory');
     Route::post('save-transit-inventory-new', [QuickBookController::class, 'saveTransitInventoryNew'])->name('saveTransitInventoryNew');
     Route::get('received-transit-inventory', [QuickBookController::class, 'receivedTransitInventory'])->name('receivedTransitInventory');
@@ -269,6 +290,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('save-customer', [QuickBookController::class, 'saveCustomer'])->name('saveCustomer');
     Route::get('product-estimates', [QuickBookController::class, 'productEstimates'])->name('productEstimates');
     Route::get('create-product-estimates', [QuickBookController::class, 'createProductEstimates'])->name('createProductEstimates');
+    Route::post('production-estimates/preview', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'preview'])->name('productionEstimation.preview');
+    Route::post('production-estimates', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'store'])->name('productionEstimation.store');
+    Route::get('production-estimates/{id}', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'show'])->name('productionEstimation.show');
+    Route::get('production-estimates/{id}/pdf', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'pdf'])->name('productionEstimation.pdf');
+    Route::get('production-estimates/{id}/csv', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'csv'])->name('productionEstimation.csv');
+    Route::post('production-estimates/{id}/archive', [\App\Http\Controllers\user_portal\ProductionEstimationController::class, 'archive'])->name('productionEstimation.archive');
     Route::post('get-product-estimates', [QuickBookController::class, 'getProductEstimates'])->name('getProductEstimates');
     Route::post('save-product-estimates', [QuickBookController::class, 'saveProductEstimates'])->name('saveProductEstimates');
 

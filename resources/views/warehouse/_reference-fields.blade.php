@@ -1,0 +1,1 @@
+<label>Reference / destination / reason</label><input class="form-control" name="reference" required maxlength="255"><label>Date</label><input class="form-control" name="date" type="date" value="{{ today()->toDateString() }}" required><label>Notes</label><textarea class="form-control" name="notes" maxlength="4000"></textarea>

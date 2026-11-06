@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <title>Reporting</title>
+        <title>Reporting | {{ config('brand.name') }}</title>
         <style type="text/css">
             .clearfix:after {
                 content: "";
@@ -144,12 +144,13 @@
 
 
         </style>
+        @include('branding.print-head')
     </head>
     <body>
         <div>
             <header class="row" style="width: 90%;" class="clearfix">
                 <div id="logo">
-                    <img  height="60px" src="images/logo.png">
+                    <img  height="60px" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('brand/galaxy-logo.png'))) }}">
                 </div>
                 <h1 style="color: black; font-weight: bold">All Machines Data</h1>
             </header>

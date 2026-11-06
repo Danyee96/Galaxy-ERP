@@ -20,9 +20,11 @@
     />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="{{asset('New/script.js')}}"></script>
-    <title>Product Categories</title>
+    <title>Product Categories | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Product Categories</h2>
       <!-- Tabs Section -->

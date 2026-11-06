@@ -19,7 +19,7 @@
       rel="stylesheet"
     />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <title>Edit Bundle Products</title>
+    <title>Edit Bundle Products | {{ config('brand.name') }}</title>
     <style>
       .product-row {
         margin-bottom: 15px;
@@ -51,8 +51,10 @@
         background-color: #218838;
       }
     </style>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Edit Bundle Products</h2>
       

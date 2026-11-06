@@ -11,14 +11,58 @@ use Carbon\Carbon;
 
 class SerializationController extends Controller
 {
-    public function serializationList()
+    public function serializationList(Request $request)
     {
         $pageConfigs = ['pageHeader' => true];
         $breadcrumbs = [
           ["link" => "/", "name" => "Home"],["name" => "Serialization Info List"]
         ];
-        $machines = Serialization::all();
-        return view('user_portal.Serialization.index',['pageConfigs'=>$pageConfigs,'breadcrumbs'=>$breadcrumbs, 'machines' => $machines]);
+        $columns = ['serial_number'=>'Serial Number','date'=>'Date','model'=>'Model','dealer_name'=>'Dealer Name','dealer_city'=>'Dealer City','customer_name'=>'Customer Name','customer_city'=>'Customer City','delivery_boy'=>'Delivery Boy'];
+        $filters = $request->validate([
+            'search'=>'nullable|string|max:200',
+            'from'=>'nullable|date_format:Y-m-d',
+            'to'=>['nullable','date_format:Y-m-d',...($request->filled('from') ? ['after_or_equal:from'] : [])],
+            'serial_number'=>'nullable|string|max:255',
+            'model'=>'nullable|string|max:255',
+            'dealer_name'=>'nullable|string|max:255',
+            'dealer_city'=>'nullable|string|max:255',
+            'customer_name'=>'nullable|string|max:255',
+            'customer_city'=>'nullable|string|max:255',
+            'delivery_boy'=>'nullable|string|max:255',
+            'field'=>'nullable|in:'.implode(',',array_keys($columns)),
+            'value'=>'nullable|string|max:255',
+            'sort'=>'nullable|in:'.implode(',',array_keys($columns)),
+            'direction'=>'nullable|in:asc,desc',
+            'print'=>'nullable|boolean',
+        ]);
+        $query = Serialization::query();
+        if ($term = trim($filters['search'] ?? '')) {
+            $query->where(function($q) use ($columns,$term) {
+                foreach(array_keys($columns) as $column) $q->orWhere($column,'like','%'.$term.'%');
+            });
+        }
+        // Preserve existing filter links while showing individual fields in the form.
+        if (!empty($filters['field']) && isset($filters['value']) && $filters['value'] !== '') {
+            $filters[$filters['field']] = $filters[$filters['field']] ?? $filters['value'];
+        }
+        foreach ($columns as $column=>$label) {
+            if (isset($filters[$column]) && $filters[$column] !== '') {
+                $query->where($column,$column === 'serial_number' ? 'like' : '=', $column === 'serial_number' ? '%'.$filters[$column].'%' : $filters[$column]);
+            }
+        }
+        if (!empty($filters['from'])) $query->where('date','>=',$filters['from']);
+        if (!empty($filters['to'])) $query->where('date','<=',$filters['to']);
+        $query->orderBy($filters['sort'] ?? 'id',$filters['direction'] ?? 'asc');
+        if (!empty($filters['sort'])) $query->orderBy('id');
+        if ($request->boolean('print')) {
+            return view('user_portal.Serialization.print',['machines'=>$query->cursor(),'filters'=>$filters,'columns'=>$columns]);
+        }
+        $values = [];
+        foreach (array_diff(array_keys($columns),['serial_number','date']) as $column) {
+            $values[$column] = Serialization::query()->whereNotNull($column)->where($column,'<>','')->distinct()->orderBy($column)->pluck($column);
+        }
+        $machines = $query->paginate(50)->withQueryString();
+        return view('user_portal.Serialization.index',['pageConfigs'=>$pageConfigs,'breadcrumbs'=>$breadcrumbs, 'machines' => $machines,'filters'=>$filters,'columns'=>$columns,'values'=>$values]);
     }
 
     public function createSerialization()

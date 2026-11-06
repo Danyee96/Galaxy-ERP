@@ -1,0 +1,50 @@
+.erp-list-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px 0;margin-bottom:10px;border-bottom:1px solid var(--erp-border,#dbe4f0)}
+.erp-list-tools label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;margin:0;color:inherit;min-width:120px;flex:1 1 140px}
+.erp-list-tools input,.erp-list-tools select{width:100%;height:36px;padding:6px 10px;border:1px solid var(--erp-border,#cbd5e1);border-radius:6px;background:var(--erp-surface,#fff);color:inherit;font:inherit;font-weight:400}
+.erp-list-tools input:focus,.erp-list-tools select:focus{outline:2px solid #2563eb;outline-offset:2px}
+.erp-list-tools-status{width:100%;font-size:12px;color:inherit;opacity:.75}
+.erp-list-print-frame{position:fixed;left:-10000px;top:0;width:1100px;height:800px;border:0}
+body.dark-layout .erp-list-tools input,body.dark-layout .erp-list-tools select{background:#15243a;border-color:#334155;color:#e2e8f0}
+@media(max-width:575px){.erp-list-tools label{flex-basis:42%;min-width:0}.erp-list-tools .btn{flex:1}}
+@media print{.erp-list-tools{display:none!important}}
+.erp-field-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:16px;border:1px solid var(--erp-border,#dbe4f0);border-radius:8px;background:var(--erp-subtle,#f5f9ff)}
+.erp-field-filters label{min-width:0}
+.erp-field-filter-actions,.erp-field-filters .erp-list-tools-status{grid-column:1/-1}
+.erp-field-filter-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:991px){.erp-field-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:575px){.erp-field-filters{padding:12px;gap:10px}.erp-field-filter-actions .btn{flex:1 1 auto}}
+.erp-list-tools .select2-container{min-width:0}
+.erp-list-tools .select2-container .select2-selection--single{height:36px;border:1px solid var(--erp-border,#cbd5e1);border-radius:6px;background:var(--erp-surface,#fff)}
+.erp-list-tools .select2-container .select2-selection__rendered{line-height:34px;padding-left:10px;color:inherit;font-weight:400}
+.erp-list-tools .select2-container .select2-selection__arrow{height:34px}
+.erp-filter-options{background:var(--erp-surface,#fff);color:var(--erp-text,#0c1a36);border-color:var(--erp-border,#cbd5e1)}
+.erp-filter-options .select2-search__field{border:1px solid var(--erp-border,#cbd5e1);border-radius:4px;background:var(--erp-surface,#fff);color:inherit;padding:7px}
+.erp-list-tools .select2-container--focus .select2-selection,.erp-list-tools .select2-container--open .select2-selection{outline:2px solid #2563eb;outline-offset:2px}
+.erp-stock-dialog{width:min(560px,calc(100vw - 24px));max-height:90vh;overflow:auto;padding:24px;border:1px solid var(--erp-border,#dbe4f0);border-radius:12px;background:var(--erp-surface,#fff);color:var(--erp-text,#0c1a36)}
+.erp-stock-dialog::backdrop{background:rgba(10,20,40,.45)}
+.erp-stock-dialog label{margin-top:14px;font-size:13px;font-weight:600}
+.erp-stock-dialog [hidden]{display:none!important}
+@media screen{
+.erp-stock-warning{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid #eed69c;border-radius:10px;background:#fffaf0;color:#774b0e;font-size:13px;line-height:1.5}
+.erp-stock-warning>i{font-size:23px;flex-shrink:0;color:#a66a10}
+.erp-stock-warning-copy{flex:1;min-width:0}
+.erp-stock-warning-copy strong{display:block;font-size:14px;font-weight:600;color:#68400b}
+.erp-stock-warning-copy p{margin:3px 0 0;color:#81643d}
+.erp-stock-warning>a{flex-shrink:0;padding:8px 12px;border:1px solid #e1c285;border-radius:7px;background:#fff;color:#68400b!important;font-size:12px;font-weight:600;text-decoration:none!important}
+.erp-stock-warning>a:hover{background:#fff1d3}
+.erp-shell .erp-warehouse .erp-warehouse-tabs{display:flex;flex-wrap:wrap;gap:5px;padding:5px;border:1px solid var(--erp-border,#dbe4f0)!important;border-radius:10px;background:var(--erp-surface,#fff)}
+.erp-shell .erp-warehouse .erp-warehouse-tabs .nav-link{margin:0;padding:10px 18px;border:1px solid transparent!important;border-radius:7px!important;background:transparent!important;color:var(--erp-muted,#526581)!important;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap}
+.erp-shell .erp-warehouse .erp-warehouse-tabs .nav-link:hover{background:var(--erp-subtle,#f1f5fb)!important;color:var(--erp-text,#172b4d)!important}
+.erp-shell .erp-warehouse .erp-warehouse-tabs .nav-link.active{background:#185dd8!important;border-color:#185dd8!important;color:#fff!important;box-shadow:none!important}
+.erp-warehouse .erp-panel{border-radius:10px;box-shadow:none}
+.erp-warehouse-search label{font-size:12px;font-weight:600;color:var(--erp-muted,#526581)}
+.erp-warehouse-search input{margin-top:5px}
+.erp-warehouse section[data-list-tools=off] .table th{background:var(--erp-subtle,#f4f7fc);color:var(--erp-muted,#526581);font-size:12px;font-weight:600}
+.erp-warehouse section[data-list-tools=off] .table td:nth-child(4),.erp-warehouse section[data-list-tools=off] .table td:nth-child(5){font-variant-numeric:tabular-nums}
+.erp-warehouse .nav-link:focus-visible,.erp-stock-warning>a:focus-visible{outline:2px solid #2563eb;outline-offset:3px}
+[data-erp-theme=dark] .erp-stock-warning,.dark-layout .erp-stock-warning{background:#2d271b;border-color:#64502b;color:#f4d69b}
+[data-erp-theme=dark] .erp-stock-warning-copy strong,.dark-layout .erp-stock-warning-copy strong{color:#f4d69b}
+[data-erp-theme=dark] .erp-stock-warning-copy p,.dark-layout .erp-stock-warning-copy p{color:#d6bf95}
+[data-erp-theme=dark] .erp-stock-warning>a,.dark-layout .erp-stock-warning>a{background:#392e1b;color:#f4d69b!important;border-color:#806536}
+@media(max-width:575px){.erp-stock-warning{align-items:flex-start;gap:10px;padding:14px;flex-wrap:wrap}.erp-stock-warning-copy{flex-basis:calc(100% - 34px)}.erp-stock-warning>a{margin-left:33px;white-space:normal}.erp-shell .erp-warehouse .erp-warehouse-tabs .nav-link{padding:9px 12px}.erp-warehouse-search .btn{flex:1 1 auto}}
+}

@@ -810,6 +810,13 @@ class RawMaterialController extends Controller
 
     public function saveTransitInventory($id)
     {
+        if (config('warehouses.enabled')) {
+            $doc=RawMaterialInventory::findOrFail($id);
+            $received=\DB::table('warehouse_transit_receipts')->where('document_type','raw')->where('document_id',$id)->sum('quantity');
+            app(\App\Services\Warehouse\Inventory::class)->receiveTransit(['request_key'=>request()->warehouse_request_key,'document_type'=>'raw','document_id'=>$id,'quantity'=>(string)($doc->stock_in-$received),'location_id'=>(int)(request()->destination_location_id ?: \DB::table('warehouse_state')->where('key','default_location')->value('value')),'date'=>today()->toDateString()]);
+            return redirect()->back()->with('message','Stock received into the selected warehouse location.');
+        }
+
         $find_inventory = RawMaterialInventory::where('id',$id)->first();
 
         $raw_material_id = $find_inventory->raw_material_id;

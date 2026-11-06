@@ -23,9 +23,11 @@
     <!-- Bootstrap Bundle JS (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <title>Invoice New</title>
+    <title>Invoice New | {{ config('brand.name') }}</title>
+    @include('branding.head')
   </head>
-  <body>
+  <body class="galaxy-workspace">
+    @include('branding.header')
     <div class="container mt-4">
       <h2>Sales</h2>
       <!-- Tabs Section -->
@@ -91,8 +93,24 @@
         </li>
       </ul>
 
+
+      <form id="invoice-filters" class="invoice-filters border rounded p-3 my-3" method="get" action="{{ route('getInvoice') }}" aria-label="Invoice filters">
+        <div class="row g-2 align-items-end">
+          <div class="col-12 col-md-4"><label class="form-label" for="invoice-filter-search">Search invoices / products</label><input class="form-control" id="invoice-filter-search" name="search" maxlength="255" value="{{ $filters['search'] ?? '' }}" placeholder="Number, title, product or SKU"></div>
+          <div class="col-6 col-md-4"><label class="form-label" for="invoice-filter-number">Invoice number</label><input class="form-control" id="invoice-filter-number" name="invoice_number" maxlength="100" value="{{ $filters['invoice_number'] ?? '' }}"></div>
+          <div class="col-6 col-md-4"><label class="form-label" for="invoice-filter-name">Issuance name</label><input class="form-control" id="invoice-filter-name" name="invoice_name" maxlength="255" value="{{ $filters['invoice_name'] ?? '' }}"></div>
+          <div class="col-6 col-md-3"><label class="form-label" for="invoice-filter-from">From</label><input type="date" class="form-control" id="invoice-filter-from" name="date_from" value="{{ $filters['date_from'] ?? '' }}"></div>
+          <div class="col-6 col-md-3"><label class="form-label" for="invoice-filter-to">To</label><input type="date" class="form-control" id="invoice-filter-to" name="date_to" value="{{ $filters['date_to'] ?? '' }}"></div>
+          <div class="col-6 col-md-3"><label class="form-label" for="invoice-filter-sort">Sort by</label><select class="form-select" id="invoice-filter-sort" name="sort">@foreach(['date' => 'Date', 'number' => 'Invoice number', 'title' => 'Issuance name', 'quantity' => 'Items issued'] as $key => $label)<option value="{{ $key }}" @if(($filters['sort'] ?? 'date') === $key) selected @endif>{{ $label }}</option>@endforeach</select></div>
+          <div class="col-6 col-md-3"><label class="form-label" for="invoice-filter-direction">Order</label><select class="form-select" id="invoice-filter-direction" name="direction"><option value="desc" @if(($filters['direction'] ?? 'desc') === 'desc') selected @endif>Descending</option><option value="asc" @if(($filters['direction'] ?? 'desc') === 'asc') selected @endif>Ascending</option></select></div>
+          <div class="col-12 d-flex gap-2 flex-wrap"><button type="submit" class="btn btn-primary">Apply Filters</button><a class="btn btn-outline-secondary" href="{{ route('getInvoice') }}" id="invoice-filter-reset">Reset</a></div>
+        </div>
+        <p class="small text-muted mt-2 mb-0">This issuance ledger records quantities. Customer links, invoice/payment statuses, due dates and monetary amounts are not recorded.</p>
+      </form>
+      <div id="invoice-filter-error" class="alert alert-danger" role="alert" tabindex="-1" hidden></div>
+      @if($errors->any())<div class="alert alert-danger" role="alert">{{ $errors->first() }}</div>@endif
       <div class="main-section">
-        @if(count($datas) == 0)
+        @if(!$hasInvoices)
         <h1>Do work. Get paid. It’s that easy.</h1>
         <div class="row justify-content-center">
           <div class="col-md-3 feature">
@@ -149,80 +167,8 @@
           <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         </div>
 
-        <!-- Search Section -->
-        <div class="search-section mb-3">
-          <form method="GET" action="">
-            <div class="input-group" style="width: 300px;">
-              <input type="text" name="search" id="searchInput" class="form-control" placeholder="Find Invoices" value="{{ isset($search) ? $search : '' }}" />
-              <button class="btn btn-primary" type="submit">Search</button>
-              @if(request('search'))
-                <a href="{{ route('getInvoice') }}" class="btn btn-outline-secondary">Clear</a>
-              @endif
-            </div>
-          </form>
-        </div>
-
-        <!-- Table Section -->
-        <div class="table-section">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">DATE</th>
-                <th scope="col">INVOICE NUMBER</th>
-                <th scope="col">INVOICE TITLE</th>
-                <th scope="col">INVOICE TOTAL ITEMS COUNT</th>
-                <th scope="col">DETAILS</th>
-                <th scope="col">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($datas as $key => $data)
-              <tr>
-                <td>{{$data->created_at->format("d-M-Y")}}</td>
-                <td>{{$data->invoice_number}}</td>
-                <td>{{$data->invoice_name}}</td>
-                <td>{{$data->total_count}}</td>
-                <td>
-                  <div class="modal fade text-left" id="backdrop{{$data->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h4 class="modal-title" id="myModalLabel4">Invoice Detail</h4>
-                        </div>
-                        <div class="modal-body">
-                          <b>Invoice Number: {{$data->invoice_number}}</b>
-                          <br>
-                          <b>Total Quantity Issued : {{$data->total_count}}</b>
-                          <hr>
-                          <ul>
-                            @foreach($data->invoiceDetails as $dd)
-                            <li>{{$dd->product_qty}} X {{$dd->productDetails->name ?? ''}}</li>
-                            @endforeach
-                          </ul>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Close</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button class="btn" data-toggle="modal" data-backdrop="false" data-target="#backdrop{{$data->id}}"><i class="fas fa-eye" title="Click to View Making Details"></i></button>
-                </td>
-                <td>
-                  <a href="{{route('SingleInvoiceDownload', $data->id)}}" target="_blank"><button class="btn btn-link">Print</button></a>
-                </td>
-              </tr>
-              @endforeach
-            </tbody>
-          </table>
-          <div class="d-flex justify-content-center mt-3">
-            {{ $datas->links('pagination::bootstrap-4') }}
-          </div>
-        </div>
         @endif
+        <div id="invoice-results">@include('user_portal.New.invoice-results')</div>
           <div
             class="modal fade"
             id="invoiceModal"
@@ -408,4 +354,34 @@
 
     // Removed filterTable() as search is now server-side
   </script>
+
+<script>
+(function () {
+  const form = document.getElementById('invoice-filters'), results = document.getElementById('invoice-results'), error = document.getElementById('invoice-filter-error');
+  let controller, revision = 0;
+  async function load(url, push) {
+    if (controller) controller.abort(); controller = new AbortController(); const epoch = ++revision;
+    results.setAttribute('aria-busy', 'true'); error.hidden = true;
+    try {
+      const response = await fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json'}, signal: controller.signal});
+      if (response.redirected) { window.location.assign(response.url); return; }
+      if (!response.ok) {
+        let message = 'Could not filter invoices. Please retry.';
+        if (response.status === 422) { const body = await response.json(); message = Object.values(body.errors || {}).flat().join(' ') || message; }
+        throw Error(message);
+      }
+      const html = await response.text(); if (epoch !== revision) return;
+      results.innerHTML = html;
+      if (push) history.pushState(null, '', url);
+      const params = new URL(url, location.origin).searchParams;
+      Array.from(form.elements).filter(field => field.name).forEach(field => { field.value = params.get(field.name) || ({sort:'date', direction:'desc'}[field.name] || ''); });
+    } catch (e) { if (e.name !== 'AbortError' && epoch === revision) { error.textContent = e.message; error.hidden = false; error.focus(); } }
+    finally { if (epoch === revision) results.removeAttribute('aria-busy'); }
+  }
+  form.addEventListener('submit', event => { event.preventDefault(); if (form.reportValidity()) load(form.action + '?' + new URLSearchParams(new FormData(form)), true); });
+  document.getElementById('invoice-filter-reset').addEventListener('click', event => { event.preventDefault(); load(event.currentTarget.href, true); });
+  results.addEventListener('click', event => { const link = event.target.closest('.pagination a'); if (link && !event.ctrlKey && !event.metaKey && !event.shiftKey) { event.preventDefault(); load(link.href, true); } });
+  window.addEventListener('popstate', () => load(location.href, false));
+})();
+</script>
 </html>
