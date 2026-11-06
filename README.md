@@ -21,3 +21,5 @@ Brand assets live in `public/brand`. The shared theme source is `resources/sass/
 - Back up/import the intended database before reviewing and running required migrations. Do not seed, reset stock or automatically run warehouse backfill on deployment.
 - Keep `WAREHOUSES_ENABLED=false` until this server's warehouse schema and stock mapping have been verified. Local activation does not activate Hostinger.
 - `storage/` and `bootstrap/cache/` must be writable. Run `php artisan storage:link` and `php artisan config:cache` after server environment configuration.
+
+Compiled runtime CSS, JavaScript, fonts and vendor assets are included under `public/` so PHP-only deployments have a complete theme. When changing frontend sources, run `npm run build` and commit the regenerated assets and manifest together. Deploy the contents of `public/` directly into the configured web root, preserving the Hostinger-specific bootstrap paths when the application lives in a sibling directory.
