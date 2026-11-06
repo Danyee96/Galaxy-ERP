@@ -23,7 +23,8 @@
     <div class="card-content">
       <div class="card-body">
         @if($errors->any())<div class="alert alert-danger" role="alert">{{ $errors->first() }}</div>@endif
-        <div class="serialization-filter-heading"><div><i class="bx bx-filter-alt" aria-hidden="true"></i><strong>Filter records</strong><span>Combine any fields below</span></div><span class="serialization-count">{{ number_format($machines->total()) }} matches</span></div>
+        <details class="erp-filter-panel serialization-filter-panel" @if($errors->any()) open @endif>
+        <summary class="serialization-filter-heading"><div><i class="bx bx-filter-alt" aria-hidden="true"></i><strong>Filter records</strong><span data-filter-active>All records</span></div><span class="serialization-count">{{ number_format($machines->total()) }} matches</span></summary>
         <form method="get" action="{{ route('serialization-list') }}" class="erp-list-tools erp-field-filters">
           <label>Search records<input type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Search all records…"></label>
           <label>Serial Number<input type="search" name="serial_number" value="{{ $filters['serial_number'] ?? '' }}" placeholder="Any serial number"></label>
@@ -41,6 +42,7 @@
           </div>
           <span class="erp-list-tools-status"><i class="bx bx-info-circle" aria-hidden="true"></i> Search and print include all matching records, across every page.</span>
         </form>
+        </details>
         <div class="serialization-results-heading"><div><h2>Registered machines</h2><span>Showing {{ $machines->firstItem() ?? 0 }}–{{ $machines->lastItem() ?? 0 }} of {{ number_format($machines->total()) }} records</span></div><span class="serialization-live">Page {{ $machines->currentPage() }} of {{ $machines->lastPage() }}</span></div>
         <div class="table-responsive serialization-table-scroll" tabindex="0" role="region" aria-label="Serialization records">
           <table class="table" id="example">

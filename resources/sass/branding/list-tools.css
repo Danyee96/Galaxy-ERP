@@ -94,3 +94,19 @@ body.dark-layout .erp-list-tools input,body.dark-layout .erp-list-tools select{b
 .serialization-empty i{font-size:30px;color:#3b74ce}
 @media(max-width:767px){.serialization-heading{align-items:flex-start;flex-wrap:wrap;gap:14px}.serialization-heading h1{font-size:21px}.serialization-heading-copy{gap:10px}.serialization-filter-heading>div>span,.serialization-live{display:none}.serialization-workspace .erp-field-filters{padding:14px;gap:12px}.serialization-filter-heading,.serialization-results-heading{padding-left:14px;padding-right:14px}.serialization-table-scroll{max-height:65vh}}
 }
+@media screen{
+.erp-filter-panel{margin-bottom:14px;border:1px solid var(--erp-border,#dce4ef);border-radius:9px;background:var(--erp-surface,#fff)}
+.erp-filter-panel>summary{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;list-style:none;font-size:13px;color:var(--erp-text,#172b4d)}
+.erp-filter-panel>summary::-webkit-details-marker{display:none}
+.erp-filter-panel>summary::before{content:'›';font-size:22px;line-height:1;color:var(--erp-primary,#185dd8);transform:rotate(0deg)}
+.erp-filter-panel[open]>summary::before{transform:rotate(90deg)}
+.erp-filter-panel>summary [data-filter-active]{font-size:11px;color:var(--erp-muted,#60738d);font-weight:400}
+.erp-filter-panel>summary:focus-visible{outline:2px solid #2563eb;outline-offset:2px;border-radius:8px}
+.erp-filter-panel>.erp-list-tools{padding:14px 16px;margin:0;border-top:1px solid var(--erp-border,#dce4ef);border-bottom:0}
+.erp-filter-panel>form:not(.erp-list-tools){margin:0!important;padding:14px 16px;border-top:1px solid var(--erp-border,#dce4ef)}
+.serialization-workspace .serialization-filter-panel{border:0;border-radius:0;margin:0}
+.serialization-workspace .serialization-filter-panel>.serialization-filter-heading{padding:15px 20px}
+.serialization-filter-panel>.serialization-filter-heading>div{flex:1}
+.erp-filter-panel:not([open])>*:not(summary){display:none!important}
+@media(max-width:575px){.serialization-workspace .serialization-filter-panel>.serialization-filter-heading{padding:13px 14px}.serialization-filter-panel>summary>div>[data-filter-active]{display:inline;font-size:10px}.serialization-filter-panel .serialization-count{font-size:10px;padding:3px 7px}}
+}
