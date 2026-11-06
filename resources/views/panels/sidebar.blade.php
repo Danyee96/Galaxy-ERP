@@ -9,10 +9,9 @@
       <span class="galaxy-monogram" aria-hidden="true">G</span>
       </a>
     </li>
-        <li class="nav-item nav-toggle">
+        <li class="nav-item nav-toggle d-xl-none">
           <a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse" role="button" tabindex="0" aria-label="Toggle navigation">
             <i class="bx bx-x d-block d-xl-none font-medium-4 primary"></i>
-            <i class="toggle-icon bx bx-disc font-medium-4 d-none d-xl-block primary" data-ticon="bx-disc"></i>
           </a>
         </li>
     </ul>

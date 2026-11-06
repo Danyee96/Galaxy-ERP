@@ -2,7 +2,7 @@
 <nav class="header-navbar main-header-navbar navbar-expand-lg navbar navbar-with-menu @if(isset($configData['navbarType'])){{ $configData['navbarClass'] }}@endif" aria-label="Workspace navigation">
   <div class="navbar-wrapper"><div class="navbar-container content"><div class="navbar-collapse erp-topbar" id="navbar-mobile">
     <div class="brand-context">
-      <button class="menu-toggle erp-icon-button" type="button" aria-label="Toggle navigation" aria-controls="main-menu-navigation"><i class="bx bx-menu" aria-hidden="true"></i></button>
+      <button class="menu-toggle erp-icon-button d-xl-none" type="button" aria-label="Toggle navigation" aria-controls="main-menu-navigation"><i class="bx bx-menu" aria-hidden="true"></i></button>
       <span class="erp-workspace-name">Galaxy ERP<span aria-hidden="true">/</span><strong>@yield('title', 'Dashboard')</strong></span>
     </div>
     <div class="brand-search">

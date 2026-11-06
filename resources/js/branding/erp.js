@@ -72,6 +72,10 @@
   }
   if (menuButton) {
     function syncMenu() {
+      if (window.innerWidth >= 1200) {
+        if (document.body.classList.contains('menu-collapsed') || document.body.classList.contains('menu-hide')) document.body.classList.remove('menu-collapsed', 'menu-hide');
+        if (!document.body.classList.contains('menu-expanded')) document.body.classList.add('menu-expanded');
+      }
       var expanded = window.innerWidth >= 1200 ? !document.body.classList.contains('menu-collapsed') : document.body.classList.contains('menu-open');
       menuButton.setAttribute('aria-expanded', String(expanded));
       var mobile = window.innerWidth < 1200;

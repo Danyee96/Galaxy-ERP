@@ -315,3 +315,13 @@
   }
 
 }
+
+@media screen {
+  .erp-shell .main-menu.brand-sidebar .navbar-header > ul { position: relative; justify-content: center; }
+  .erp-shell .main-menu.brand-sidebar .navbar-header > ul > .nav-item:first-child { margin: 0 !important; flex: 1; display: flex; justify-content: center; min-width: 0; }
+  .erp-shell .main-menu.brand-sidebar .navbar-brand { display: flex; align-items: center; justify-content: center; }
+  .erp-shell .main-menu.brand-sidebar .navbar-header .nav-toggle { position: absolute; right: 0; }
+  @media (min-width: 1200px) {
+    .erp-shell .main-menu.brand-sidebar .nav-toggle, .erp-shell .brand-context .menu-toggle { display: none !important; }
+  }
+}

@@ -37,6 +37,6 @@
     <link rel="stylesheet" type="text/css" href="{{asset('assets/css/style-rtl.css')}}">
     @endif
     <!-- END: Custom CSS-->
-<link rel="stylesheet" href="{{ asset('assets/css/biztally.css') }}?v={{ filemtime(public_path('assets/css/biztally.css')) }}">
+<link rel="stylesheet" href="{{ asset('assets/css/biztally.css') }}?v={{ is_file(public_path('assets/css/biztally.css')) ? filemtime(public_path('assets/css/biztally.css')) : '1' }}">
 
 @include('branding.head')
