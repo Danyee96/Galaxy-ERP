@@ -1,0 +1,44 @@
+name: Deploy Galaxy ERP to Hostinger
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: galaxy-erp-production
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  deploy:
+    if: vars.HOSTINGER_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure verified SSH connection
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/galaxy-deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/galaxy-deploy ~/.ssh/known_hosts
+      - name: Publish private checkout and deploy public files
+        env:
+          DEPLOY_HOST: ${{ vars.HOSTINGER_HOST }}
+          DEPLOY_PORT: ${{ vars.HOSTINGER_PORT }}
+          DEPLOY_USER: ${{ vars.HOSTINGER_USER }}
+          DEPLOY_DOMAIN: ${{ vars.HOSTINGER_DOMAIN_DIR }}
+          DEPLOY_PHP: ${{ vars.HOSTINGER_PHP_BIN }}
+          SITE_URL: https://erp.galaxyinverter.com
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DEPLOY_DOMAIN" =~ ^/home/[a-zA-Z0-9_-]+/domains/[a-zA-Z0-9.-]+$ ]]
+          [[ "$DEPLOY_PORT" =~ ^[0-9]+$ ]]
+          [[ "$DEPLOY_PHP" =~ ^/[a-zA-Z0-9_./-]+$ ]]
+          SSH=(ssh -i ~/.ssh/galaxy-deploy -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
+          "${SSH[@]}" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_DOMAIN/.galaxy-deploy/checkout'; chmod 700 '$DEPLOY_DOMAIN/.galaxy-deploy'"
+          rsync -az --delete -e "ssh -i $HOME/.ssh/galaxy-deploy -p $DEPLOY_PORT -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" --exclude='.git/' --exclude='.env*' --exclude='vendor/' --exclude='node_modules/' --exclude='storage/' ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DOMAIN/.galaxy-deploy/checkout/"
+          "${SSH[@]}" "$DEPLOY_USER@$DEPLOY_HOST" "PHP_BIN='$DEPLOY_PHP' COMPOSER_BIN=/usr/local/bin/composer bash '$DEPLOY_DOMAIN/.galaxy-deploy/checkout/scripts/deploy-hostinger.sh' '$DEPLOY_DOMAIN' '$SITE_URL'"

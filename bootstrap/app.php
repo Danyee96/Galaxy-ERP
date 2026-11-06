@@ -15,6 +15,14 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// Bind the real web root for asset lookups, uploads and CLI cache commands.
+$splitPublicPath = dirname($app->basePath()).'/public_html';
+if (defined('LARAVEL_PUBLIC_PATH')) {
+    $app->instance('path.public', LARAVEL_PUBLIC_PATH);
+} elseif (basename($app->basePath()) === 'laravel_app' && is_dir($splitPublicPath)) {
+    $app->instance('path.public', $splitPublicPath);
+}
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces

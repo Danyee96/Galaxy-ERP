@@ -210,7 +210,7 @@
         @endphp
         <script type="application/json" id="plan-export-data">@json($exportData)</script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-        <script src="{{ asset('brand/estimation.js') }}?v={{ filemtime(public_path('brand/estimation.js')) }}" defer></script>
+        <script src="{{ asset('brand/estimation.js') }}?v={{ is_file(public_path('brand/estimation.js')) ? filemtime(public_path('brand/estimation.js')) : '1' }}" defer></script>
     </body>
 </html>
 

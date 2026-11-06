@@ -5,6 +5,13 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Support both standard Laravel public/ and Hostinger's sibling web root.
+$applicationPath = basename(__DIR__) === 'public_html'
+    ? dirname(__DIR__).'/laravel_app'
+    : dirname(__DIR__);
+define('LARAVEL_PUBLIC_PATH', __DIR__);
+
+
 /*
 |--------------------------------------------------------------------------
 | Check If Application Is Under Maintenance
@@ -16,8 +23,8 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
-    require __DIR__.'/../storage/framework/maintenance.php';
+if (file_exists($applicationPath.'/storage/framework/maintenance.php')) {
+    require $applicationPath.'/storage/framework/maintenance.php';
 }
 
 /*
@@ -31,7 +38,7 @@ if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require $applicationPath.'/vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +51,7 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$app = require_once $applicationPath.'/bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 

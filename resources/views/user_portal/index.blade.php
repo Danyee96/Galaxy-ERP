@@ -66,6 +66,6 @@ var monthly_days_arr = Object.values(@json($monthly_days_arr)), monthly_in_count
 @if(is_file(public_path('js/custom_charts/chart-one.js')))
 <script src="{{ asset('js/custom_charts/chart-one.js') }}"></script>
 @else
-<script src="{{ asset('brand/erp-dashboard.js') }}?v={{ filemtime(public_path('brand/erp-dashboard.js')) }}" defer></script>
+<script src="{{ asset('brand/erp-dashboard.js') }}?v={{ is_file(public_path('brand/erp-dashboard.js')) ? filemtime(public_path('brand/erp-dashboard.js')) : '1' }}" defer></script>
 @endif
 @endsection

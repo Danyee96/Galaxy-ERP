@@ -30,7 +30,7 @@
     <!-- BEGIN: Page JS-->
     @yield('page-scripts')
     <!-- END: Page JS-->
-<script src="{{ asset('assets/js/biztally.js') }}?v={{ filemtime(public_path('assets/js/biztally.js')) }}"></script>
+<script src="{{ asset('assets/js/biztally.js') }}?v={{ is_file(public_path('assets/js/biztally.js')) ? filemtime(public_path('assets/js/biztally.js')) : '1' }}"></script>
 
 <script>
 (function(){

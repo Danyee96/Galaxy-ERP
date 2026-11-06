@@ -37,8 +37,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <script>
     try { var erpTheme = localStorage.getItem('galaxy-erp-theme'); document.documentElement.dataset.erpTheme = erpTheme === 'dark' || erpTheme === 'light' ? erpTheme : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) { document.documentElement.dataset.erpTheme = 'light'; }
     </script>
-    <link rel="stylesheet" href="{{ asset('brand/erp.css') }}?v={{ filemtime(public_path('brand/erp.css')) }}">
-    <script src="{{ asset('brand/erp.js') }}?v={{ filemtime(public_path('brand/erp.js')) }}" defer></script>
+    <link rel="stylesheet" href="{{ asset('brand/erp.css') }}?v={{ is_file(public_path('brand/erp.css')) ? filemtime(public_path('brand/erp.css')) : '1' }}">
+    <script src="{{ asset('brand/erp.js') }}?v={{ is_file(public_path('brand/erp.js')) ? filemtime(public_path('brand/erp.js')) : '1' }}" defer></script>
     </head>
     <!-- END: Head-->
 

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ asset('vendors/css/forms/select/select2.min.css') }}">
 @endsection
 @section('page-styles')
-<link rel="stylesheet" href="{{ asset('brand/estimation.css') }}?v={{ filemtime(public_path('brand/estimation.css')) }}">
+<link rel="stylesheet" href="{{ asset('brand/estimation.css') }}?v={{ is_file(public_path('brand/estimation.css')) ? filemtime(public_path('brand/estimation.css')) : '1' }}">
 @endsection
 @section('content')
 <div class="erp-planner" id="production-planner" data-preview-url="{{ route('productionEstimation.preview') }}" data-save-url="{{ route('productionEstimation.store') }}">
@@ -64,5 +64,5 @@
 @endsection
 @section('page-scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-<script src="{{ asset('brand/estimation.js') }}?v={{ filemtime(public_path('brand/estimation.js')) }}" defer></script>
+<script src="{{ asset('brand/estimation.js') }}?v={{ is_file(public_path('brand/estimation.js')) ? filemtime(public_path('brand/estimation.js')) : '1' }}" defer></script>
 @endsection
