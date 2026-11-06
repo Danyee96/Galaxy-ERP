@@ -13,7 +13,7 @@ Brand assets live in `public/brand`. The shared theme source is `resources/sass/
 
 ## Hostinger deployment
 
-- Select PHP **8.2** for both the build and website runtime; the repository pins this tested minor version. `.php-version` is a runtime hint; confirm the Hostinger setting too.
+- PHP **8.2** is the locally tested version. The locked dependency range also permits PHP 8.3 and 8.4. Use compatible versions for both the build and website runtime; `.php-version` is only a hint. Composer validates the actual environment without a simulated PHP override.
 - Production dependencies: `composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction`.
 - Frontend build: `npm ci && npm run build`. The generated `public/` assets and `mix-manifest.json` must be deployed together.
 - Serve only the `public/` directory. Keep `.env` and the application outside the public document root.

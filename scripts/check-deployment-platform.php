@@ -16,8 +16,8 @@ foreach (array_diff_key($required, $provided) as $name => $_) {
 }
 sort($missing);
 $errors = [];
-if (PHP_VERSION_ID < 80200 || PHP_VERSION_ID >= 80300) {
-    $errors[] = 'Build PHP is '.PHP_VERSION.'; Galaxy ERP requires PHP 8.2.x. Set Hostinger BUILD and WEBSITE PHP versions to 8.2.';
+if (PHP_VERSION_ID < 80200 || PHP_VERSION_ID >= 80500) {
+    $errors[] = 'Build PHP is '.PHP_VERSION.'; The locked dependencies support PHP 8.2, 8.3 or 8.4. Select one of those versions for the build and website.';
 }
 if ($missing) $errors[] = 'Enable these PHP extensions for the build: '.implode(', ', $missing).'.';
 $message = 'Galaxy ERP platform: PHP '.PHP_VERSION.'; missing extensions: '.($missing ? implode(', ', $missing) : 'none').PHP_EOL;
