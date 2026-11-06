@@ -69,7 +69,7 @@
             "@php artisan key:generate --ansi"
         ],
         "pre-install-cmd": [
-            "@composer check-platform-reqs --lock --no-dev"
+            "@php scripts/check-deployment-platform.php"
         ]
     }
 }
