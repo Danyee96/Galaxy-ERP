@@ -7,6 +7,11 @@
 @endsection
 
 @section('content')
+<div class="serialization-workspace">
+<header class="serialization-heading">
+  <div class="serialization-heading-copy"><span class="serialization-heading-icon" aria-hidden="true"><i class="bx bx-barcode"></i></span><div><p class="serialization-eyebrow">OPERATIONS / SERIALIZATION</p><h1>Serialization register</h1><p>Find machines, trace deliveries and review customer records.</p></div></div>
+  <a class="btn btn-primary" href="{{ route('create-serialization-data') }}"><i class="bx bx-plus" aria-hidden="true"></i> Add serialization</a>
+</header>
 @if(session()->has('message'))
   <div class="alert alert-success">
     {{ session()->get('message') }}
@@ -18,6 +23,7 @@
     <div class="card-content">
       <div class="card-body">
         @if($errors->any())<div class="alert alert-danger" role="alert">{{ $errors->first() }}</div>@endif
+        <div class="serialization-filter-heading"><div><i class="bx bx-filter-alt" aria-hidden="true"></i><strong>Filter records</strong><span>Combine any fields below</span></div><span class="serialization-count">{{ number_format($machines->total()) }} matches</span></div>
         <form method="get" action="{{ route('serialization-list') }}" class="erp-list-tools erp-field-filters">
           <label>Search records<input type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Search all records…"></label>
           <label>Serial Number<input type="search" name="serial_number" value="{{ $filters['serial_number'] ?? '' }}" placeholder="Any serial number"></label>
@@ -33,12 +39,13 @@
             <a class="btn btn-sm btn-outline-primary" href="{{ route('serialization-list') }}">Reset</a>
             <button class="btn btn-sm btn-outline-primary" type="submit" name="print" value="1" formtarget="_blank">Print filtered data</button>
           </div>
-          <span class="erp-list-tools-status">{{ number_format($machines->total()) }} matching records · Combine fields to narrow results. Filters and printing include all pages.</span>
+          <span class="erp-list-tools-status"><i class="bx bx-info-circle" aria-hidden="true"></i> Search and print include all matching records, across every page.</span>
         </form>
-        <div class="table-responsive">
+        <div class="serialization-results-heading"><div><h2>Registered machines</h2><span>Showing {{ $machines->firstItem() ?? 0 }}–{{ $machines->lastItem() ?? 0 }} of {{ number_format($machines->total()) }} records</span></div><span class="serialization-live">Page {{ $machines->currentPage() }} of {{ $machines->lastPage() }}</span></div>
+        <div class="table-responsive serialization-table-scroll" tabindex="0" role="region" aria-label="Serialization records">
           <table class="table" id="example">
             <thead>
-              <tr style="color:black">
+              <tr>
                 <th>Sr.</th>
                 <th style="min-width: 80px">Serial Number</th>
                 <th style="min-width: 100px">Date</th>
@@ -50,30 +57,30 @@
                 <th style="min-width: 80px">Delivery Boy</th>
               </tr>
             </thead>
-            <tbody style="color: black">
-              @foreach($machines as $key => $machine)
+            <tbody>
+              @forelse($machines as $key => $machine)
                 <tr>
                   <td>{{ $machines->firstItem() + $key }}</td>
-                  <td>{{$machine->serial_number}}</td>
+                  <td><span class="serialization-serial">{{$machine->serial_number}}</span></td>
                   <td>{{date('d-M-Y', strtotime($machine->date))}}</td>
-                  <td style="min-width:80px">{{$machine->model}}</td>
-                  <td style="min-width:80px">{{$machine->dealer_name}}</td>
-                  <td style="min-width:80px">{{$machine->dealer_city}}</td>
-                  <td style="min-width:80px">{{$machine->customer_name}}</td>
-                  <td style="min-width:80px">{{$machine->customer_city}}</td>
-                  <td style="min-width:80px">{{$machine->delivery_boy}}</td>
+                  <td style="min-width:80px"><span class="serialization-model">{{$machine->model}}</span></td>
+                  <td style="min-width:80px">{{ $machine->dealer_name ?: '—' }}</td>
+                  <td style="min-width:80px">{{ $machine->dealer_city ?: '—' }}</td>
+                  <td style="min-width:80px">{{ $machine->customer_name ?: '—' }}</td>
+                  <td style="min-width:80px">{{ $machine->customer_city ?: '—' }}</td>
+                  <td style="min-width:80px">{{ $machine->delivery_boy ?: '—' }}</td>
                 </tr>
-              @endforeach              
+              @empty<tr><td colspan="9"><div class="serialization-empty"><i class="bx bx-search-alt" aria-hidden="true"></i><strong>No matching records</strong><span>Try another model, city or date range.</span></div></td></tr>@endforelse
             </tbody>
           </table>
         </div>
-        {{ $machines->links() }}
+<div class="serialization-pagination">{{ $machines->links('pagination::bootstrap-4') }}</div>
       </div>
     </div>
   </div>
 </div>
 <!-- Column selectors with Export Options and print table -->
-
+</div>
 @endsection
 
 @section('vendor-scripts')
