@@ -114,15 +114,6 @@ mix.webpackConfig({
   }
 })
 
-if (mix.inProduction()) {
-  mix.version();
-  mix.webpackConfig({
-    output: {
-      publicPath: '/demo/frest-bootstrap-laravel-admin-dashboard-template/demo-1'
-    }
-  });
-  mix.setResourceRoot("/demo/frest-bootstrap-laravel-admin-dashboard-template/demo-1");
-}
 mix.version();
 
 mix.scripts('resources/js/branding/warehouse-context.js', 'public/brand/warehouse-context.js');
