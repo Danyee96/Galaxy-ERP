@@ -74,5 +74,8 @@ chmod -R u+rwX "$APP/storage" "$APP/bootstrap/cache"
 (cd "$APP" && "$PHP_BIN" artisan view:clear && "$PHP_BIN" artisan config:cache)
 [[ "$ENV_HASH" == "$("$PHP_BIN" -r 'echo hash_file("sha256",$argv[1]);' "$APP/.env")" ]] || { echo 'Production .env unexpectedly changed.' >&2; exit 1; }
 "$PHP_BIN" "$SOURCE/scripts/verify-deployed-layout.php" "$DOMAIN"
-if [[ -n "$SITE_URL" ]]; then "$PHP_BIN" "$SOURCE/scripts/verify-deployment-http.php" "$SITE_URL" "$WEB"; fi
+if [[ -n "$SITE_URL" ]]; then
+  WAREHOUSE_FLAG=$("$PHP_BIN" -r 'require $argv[1]."/vendor/autoload.php"; $values=Dotenv\Dotenv::parse(file_get_contents($argv[1]."/.env")); echo strtolower($values["WAREHOUSES_ENABLED"]??"false");' "$APP")
+  "$PHP_BIN" "$SOURCE/scripts/verify-deployment-http.php" "$SITE_URL" "$WEB" "$WAREHOUSE_FLAG"
+fi
 echo 'Deployment complete. Production configuration, application key, uploads and database records were not replaced.'

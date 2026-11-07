@@ -26,4 +26,17 @@ for n in [1,2]:
  assert not (web/'app').exists() and not (web/'.env').exists()
  assert not (web/'storage/logs').exists()
  print('PASS deployment',n,'layout, .env/APP_KEY, SQLite database, private storage and public uploads preserved.')
+# Explicit activation is allowed only for an initialized ledger and survives deployment.
+active_env=env.replace('WAREHOUSES_ENABLED=false','WAREHOUSES_ENABLED=true')
+(app/'.env').write_text(active_env)
+r=subprocess.run(['php',str(source/'scripts/validate-production-env.php'),str(app)],capture_output=True,text=True)
+assert r.returncode!=0,'An uninitialized warehouse ledger was accepted'
+c=sqlite3.connect(db);c.execute('CREATE TABLE warehouse_state (key TEXT PRIMARY KEY,value TEXT)');c.execute("INSERT INTO warehouse_state VALUES('ready','1')");c.commit();c.close()
+active_dbhash=hashlib.sha256(db.read_bytes()).hexdigest()
+r=subprocess.run(['bash',str(source/'scripts/deploy-hostinger.sh'),str(domain)],cwd=source,env=dict(os.environ,PHP_BIN=shutil.which('php'),COMPOSER_BIN=shutil.which('composer')),capture_output=True,text=True)
+(base/'deploy-active.log').write_text(r.stdout+r.stderr)
+if r.returncode:print((r.stdout+r.stderr)[-2000:]);raise SystemExit(r.returncode)
+assert (app/'.env').read_text()==active_env
+assert hashlib.sha256(db.read_bytes()).hexdigest()==active_dbhash
+print('PASS initialized warehouse activation preserved across deployment; uninitialized activation rejected.')
 (base/'fixture.json').write_text(json.dumps({'domain':str(domain),'source':str(source)}));pathlib.Path('/tmp/galaxy-deploy-fixture-path').write_text(str(base));print('Fixture:',base)
