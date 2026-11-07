@@ -480,7 +480,7 @@ class IndexController extends Controller
         $today_date = Carbon::now(+5)->format('Y-m-d');
 
         // Build query with eager loading
-        $query = ItemHistory::with(['Item', 'Company', 'Power', 'Error'])->orderBy('created_at','DESC');
+        $query = ItemHistory::with(['Item', 'Company', 'Power', 'Error', 'EntryBy', 'machineAccessories.Accessory'])->orderBy('created_at','DESC');
 
         // Apply filters
         if ($request->from && $request->to) {

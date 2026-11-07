@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ asset('brand/galaxy.css') }}?v={{ is_file(public_path('brand/galaxy.css')) ? filemtime(public_path('brand/galaxy.css')) : '1' }}">
 
 @if(config('warehouses.enabled') && Auth::check() && in_array((int)Auth::user()->role_id,[1,3,4,5],true))
-<script type="application/json" id="warehouse-validation-errors">@json($errors->all())</script>
+<script type="application/json" id="warehouse-validation-errors">@json($errors instanceof \Illuminate\Support\ViewErrorBag ? $errors->all() : [])</script>
 <script src="{{ asset('brand/warehouse-context.js') }}?v={{ is_file(public_path('brand/warehouse-context.js')) ? filemtime(public_path('brand/warehouse-context.js')) : '1' }}" defer></script>
 @endif
 
