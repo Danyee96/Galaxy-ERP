@@ -181,6 +181,22 @@ class WarehouseInventoryTest extends TestCase
         $this->post(route('saveInvoice'),$payload)->assertRedirect()->assertSessionHasErrors();
         $this->assertSame(1,\App\Models\Invoice::count());$this->assertSame('42',$this->source->fresh()->total_qty);
     }
+    public function test_stale_invoice_numbers_are_reallocated_without_duplicate_stock_issues(): void
+    {
+        Schema::create('invoices',function(Blueprint $t){$t->id();$t->string('invoice_number');$t->string('invoice_name');$t->integer('total_count');$t->integer('created_by');$t->timestamps();});
+        Schema::create('invoice_details',function(Blueprint $t){$t->id();$t->integer('invoice_id');$t->integer('product_id');$t->integer('product_qty');$t->timestamps();});
+        Schema::table('product_inventories',function(Blueprint $t){$t->string('description')->nullable();$t->integer('entry_by')->nullable();});
+        foreach (['7434','7421'] as $number) \App\Models\Invoice::create(['invoice_number'=>$number,'invoice_name'=>'Imported','total_count'=>0,'created_by'=>99]);
+        $payload=['warehouse_request_key'=>(string)Str::uuid(),'invoice_number'=>'7422','invoice_name'=>'New issue','total_count'=>1,'product'=>[$this->source->id],'quantity'=>[1]];
+        $this->post(route('saveInvoice'),$payload)->assertRedirect();
+        $this->assertSame('7435',(string)\App\Models\Invoice::latest('id')->value('invoice_number'));
+        $this->post(route('saveInvoice'),$payload)->assertRedirect();
+        $payload['warehouse_request_key']=(string)Str::uuid();
+        $this->post(route('saveInvoice'),$payload)->assertRedirect();
+        $this->assertSame('7436',(string)\App\Models\Invoice::latest('id')->value('invoice_number'));
+        $this->assertSame(4,\App\Models\Invoice::count());
+        $this->assertSame('38',$this->source->fresh()->total_qty);
+    }
     public function test_legacy_receipt_endpoint_and_request_replay_keep_stock_consistent():void
     {
         $doc=ProductInventory::create(['product_id'=>$this->source->id,'transit_id'=>2,'status'=>0,'stock_in'=>'10','received_stock'=>0,'remaining_stock'=>10]);

@@ -35,6 +35,27 @@ class InvoiceFiltersTest extends TestCase
         return tap(Invoice::create(['invoice_number' => $number, 'invoice_name' => $title, 'total_count' => $count]), fn ($invoice) => $invoice->forceFill(['created_at' => $date, 'updated_at' => $date])->save());
     }
 
+    public function test_next_number_uses_numeric_maximum_after_out_of_order_imports(): void
+    {
+        $this->invoice('999', 'Older', 1, '2026-11-01 00:00:00');
+        $this->invoice('7434', 'Latest number', 1, '2026-11-12 00:00:00');
+        $this->invoice('7421', 'Imported later', 1, '2026-11-10 00:00:00');
+        $response = $this->get(route('getInvoice'))->assertOk();
+        $this->assertSame(7435, $response['invoice_number']);
+    }
+
+    public function test_legacy_saves_ignore_stale_or_supplied_numbers_and_advance_sequence(): void
+    {
+        config(['warehouses.enabled' => false]);
+        Schema::create('users', function (Blueprint $t) { $t->id(); });
+        DB::table('users')->insert(['id' => 99]);
+        $this->invoice('7434', 'Existing', 0, '2026-11-12 00:00:00');
+        foreach (['7422', '99999'] as $number) {
+            $this->post(route('saveInvoice'), ['invoice_number' => $number, 'invoice_name' => 'New', 'total_count' => 0])->assertRedirect();
+        }
+        $this->assertSame(['7434', '7435', '7436'], Invoice::orderBy('id')->pluck('invoice_number')->all());
+    }
+
     public function test_combined_filters_and_inclusive_dates_return_exact_aggregates(): void
     {
         $this->invoice('1201', 'Solar workshop', 5, '2026-11-01 00:00:00');

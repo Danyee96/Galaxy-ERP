@@ -844,15 +844,27 @@ class QuickBookController extends Controller
         $sortColumns = ['date' => 'created_at', 'number' => 'invoice_number', 'title' => 'invoice_name', 'quantity' => 'total_count'];
         $query->orderBy($sortColumns[$filters['sort'] ?? 'date'], $filters['direction'] ?? 'desc')->orderBy('id', $filters['direction'] ?? 'desc');
         $datas = $query->with(['invoiceDetails.productDetails'])->paginate(25)->appends(collect($filters)->except('page')->all());
-        $lastInvoice = Invoice::orderBy('id', 'DESC')->first(['invoice_number']);
-        $invoice_number = $lastInvoice ? $lastInvoice->invoice_number + 1 : 1001;
+        $invoice_number = Invoice::nextNumber();
         $viewData = compact('invoice_number', 'datas', 'search', 'summary', 'filters');
-        $viewData['hasInvoices'] = $lastInvoice !== null;
+        $viewData['hasInvoices'] = Invoice::exists();
         if ($request->ajax()) return view('user_portal.New.invoice-results', $viewData);
         return view('user_portal.New.invoice-new', $viewData);
     }
 
     public function saveInvoice(Request $request)
+    {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            // Warehouse posting already holds the global ledger mutex. Legacy mode
+            // locks a stable user row so simultaneous submissions cannot reuse a number.
+            if (!$request->attributes->get('warehouse.transaction')) {
+                \App\Models\User::orderBy('id')->lockForUpdate()->firstOrFail();
+            }
+            $request->merge(['invoice_number' => Invoice::nextNumber()]);
+            return $this->createInvoice($request);
+        });
+    }
+
+    private function createInvoice(Request $request)
     {
         $created_by = Auth::user()->id;
         $invoice_name = $request->invoice_name;

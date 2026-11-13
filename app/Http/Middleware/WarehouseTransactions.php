@@ -27,7 +27,6 @@ class WarehouseTransactions
                 if((int)$old->user_id!==(int)$request->user()->id || $old->input_hash!==$hash) app(Inventory::class)->fail('Request key reused with different stock inputs. Reload and retry.');
                 return response($old->body,$old->status,json_decode($old->headers,true));
             }
-            if($request->route()->getActionMethod()==='saveInvoice' && \App\Models\Invoice::where('invoice_number',$request->invoice_number)->exists()) app(Inventory::class)->fail('This invoice number has already issued stock.');
             if(in_array($request->route()->getActionMethod(),['saveRemainigInventory','saveRemainigInventoryNew'],true)) {
                 $request->validate(['qty_used_ids'=>'required|array','qty_used_ids.*'=>'integer|distinct|exists:finished_model_materials,id','qty_used'=>'required|array']);
                 if(count($request->qty_used_ids)!==count($request->qty_used)) app(Inventory::class)->fail('Material and quantity rows do not match.');
